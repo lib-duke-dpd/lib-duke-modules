@@ -1,0 +1,73 @@
+<?php
+
+function discovery_help($path, $arg) {
+	switch ($path) {
+		case "admim/help#mymod":
+			return '<p>' . t("Display a Multi-Tabbed Search Box on the Frontpage.") . '</p>';
+			break;
+	}
+}
+
+/**
+ * Implements hook_menu()
+ */
+function discovery_menu() {
+	// TODO - expose some pages
+	// It IS possible to leverage the TRLN WebService API
+	return array();
+}
+
+function discovery_theme() {
+	return array(
+		'discovery_searchbox' => array(
+			'variables'	=> array('myparam' => NULL)
+		),
+	);
+}
+
+function discovery_block_info() {
+	$blocks['discovery_searchbox'] = array(
+		'info'	=> t('Discovery Multi-Tab Search Box'),
+		'cache'	=> DRUPAL_CACHE_PER_ROLE,
+	);
+	return $blocks;
+}
+
+function discovery_block_view($delta = '') {
+	$fn_name = 'discovery_show_' . $delta;
+	if (function_exists($fn_name)) {
+		return call_user_func($fn_name);
+	}
+	return t('No content to display');
+}
+
+function theme_discovery_searchbox($variables) {
+	return '<div>' . t('This is what it looks like from the upper deck') . '</div>';
+}
+
+function discovery_show_searchbox() {
+	$block['subject'] = '';
+	
+	// If no theme has defined a custom template for this
+	// for instance, block--discovery--searchbox.tpl.php
+	// then, the above 'theme_searchbox' function will be invoked.
+	$block['content'] = theme('discovery_searchbox', array());
+	return $block;
+}
+
+/**
+ * Implementation of hook_preprocess_block()
+ *
+ * Please note that, as an alternative, create a template file named
+ * 'preprocess-block.inc', residing in /sites/all/themes/dukelib/preprocess
+ */
+function discovery_preprocess_block(&$vars) {
+	if ($vars['block']->delta == 'searchbox') {
+		drupal_add_js('http://library.duke.edu/javascript/blue-note/home-search-box.js', 'external');
+		drupal_add_js('http://library.duke.edu/javascript/blue-note/home-search-box-extras.js', 'external');
+		drupal_add_js('http://autosuggest.trln.org/plugins/jquery.trln.autocomplete.js', 'external');
+		drupal_add_js('http://autosuggest.trln.org/plugins/jquery.trln.autosuggest.js', 'external');
+		drupal_add_css('http://library.duke.edu/css/blue-note/page-specific/home-page/home-search-box.css', 'external');
+		drupal_add_css('http://autosuggest.trln.org/plugins/DUKE_autosuggest.css', 'external');
+	}
+}

@@ -1,0 +1,9 @@
+name = Discovery UI for Duke Library websites
+description = Display the "tabbed" search form that includes Summon Search and the TRLN discovery interfaces
+core = 7.x
+package = Duke Library UI 
+
+; extra files
+
+; javascript files
+; scripts[] = discovery.js
