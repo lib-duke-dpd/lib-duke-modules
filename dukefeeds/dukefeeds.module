@@ -1,0 +1,176 @@
+<?php
+include_once(drupal_get_path('module', 'aggregator') . '/aggregator.parser.inc');
+
+function dukefeeds_help($path, $arg) {
+	switch ($path) {
+		case 'admin/help#dukefeeds':
+			return '<p>' . t('Provides custom parsing of Duke Library Blog RSS feeds') . '</p>';
+			break;
+	}
+}
+
+/**
+ * Implements hook_aggregator_parse_info().
+ */
+function dukefeeds_aggregator_parse_info() {
+	return array(
+		'title'	=> t('Duke Library Feed Parser'),
+		'description' => t('Parses RSS beyond the default aggregator.'),
+	);
+}
+
+/**
+ * Implements hook_aggreator_parse
+ *
+ */
+function dukefeeds_aggregator_parse($feed) {
+  global $channel, $image;
+
+	watchdog('dukefeeds_aggregator_parse', 'in new parsing function');
+  // Filter the input data.
+  if (dukefeeds_parse_feed($feed->source_string, $feed)) {
+    $modified = empty($feed->http_headers['last-modified']) ? 0 : strtotime($feed->http_headers['last-modified']);
+
+    // Prepare the channel data.
+    foreach ($channel as $key => $value) {
+      $channel[$key] = trim($value);
+    }
+
+    // Prepare the image data (if any).
+    foreach ($image as $key => $value) {
+      $image[$key] = trim($value);
+    }
+
+    $etag = empty($feed->http_headers['etag']) ? '' : $feed->http_headers['etag'];
+
+    // Add parsed data to the feed object.
+    $feed->link = !empty($channel['link']) ? $channel['link'] : '';
+    $feed->description = !empty($channel['description']) ? $channel['description'] : '';
+    $feed->image = !empty($image['url']) ? $image['url'] : '';
+    $feed->etag = $etag;
+    $feed->modified = $modified;
+
+    // Clear the cache.
+    cache_clear_all();
+
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
+/**
+ * Parses a feed and stores its items.
+ *
+ * @param $data
+ *   The feed data.
+ * @param $feed
+ *   An object describing the feed to be parsed.
+ *
+ * @return
+ *   FALSE on error, TRUE otherwise.
+ */
+function dukefeeds_parse_feed(&$data, $feed) {
+  global $items, $image, $channel;
+
+  // Unset the global variables before we use them.
+  unset($GLOBALS['element'], $GLOBALS['item'], $GLOBALS['tag']);
+  $items = array();
+  $image = array();
+  $channel = array();
+
+  // Parse the data.
+  $xml_parser = drupal_xml_parser_create($data);
+  xml_set_element_handler($xml_parser, 'aggregator_element_start', 'aggregator_element_end');
+  xml_set_character_data_handler($xml_parser, 'aggregator_element_data');
+
+  if (!xml_parse($xml_parser, $data, 1)) {
+    watchdog('dukefeeds', 'The feed from %site seems to be broken, due to an error "%error" on line %line.', array('%site' => $feed->title, '%error' => xml_error_string(xml_get_error_code($xml_parser)), '%line' => xml_get_current_line_number($xml_parser)), WATCHDOG_WARNING);
+    drupal_set_message(t('The feed from %site seems to be broken, because of error "%error" on line %line.', array('%site' => $feed->title, '%error' => xml_error_string(xml_get_error_code($xml_parser)), '%line' => xml_get_current_line_number($xml_parser))), 'error');
+    return FALSE;
+  }
+  xml_parser_free($xml_parser);
+
+  // We reverse the array such that we store the first item last, and the last
+  // item first. In the database, the newest item should be at the top.
+  $items = array_reverse($items);
+
+  // Initialize items array.
+  $feed->items = array();
+  foreach ($items as $item) {
+
+    // Prepare the item:
+    foreach ($item as $key => $value) {
+      $item[$key] = trim($value);
+    }
+
+    // Resolve the item's title. If no title is found, we use up to 40
+    // characters of the description ending at a word boundary, but not
+    // splitting potential entities.
+    if (!empty($item['title'])) {
+      $item['title'] = $item['title'];
+    }
+    elseif (!empty($item['description'])) {
+      $item['title'] = preg_replace('/^(.*)[^\w;&].*?$/', "\\1", truncate_utf8($item['description'], 40));
+    }
+    else {
+      $item['title'] = '';
+    }
+
+    // Resolve the items link.
+    if (!empty($item['link'])) {
+      $item['link'] = $item['link'];
+    }
+    else {
+      $item['link'] = $feed->link;
+    }
+    if (isset($item['source'])) {
+    	$item['link'] = $item['source'];
+    }
+
+    // Atom feeds have an ID tag instead of a GUID tag.
+    if (!isset($item['guid'])) {
+      $item['guid'] = isset($item['id']) ? $item['id'] : '';
+    }
+
+    // Atom feeds have a content and/or summary tag instead of a description tag.
+    if (isset($item['description'])) {
+		$item['orig_description'] = $item['description'];
+	}
+    if (!empty($item['content:encoded'])) {
+		$item['description'] = $item['content:encoded'];
+    }
+    elseif (!empty($item['summary'])) {
+    	$item['description'] = $item['summary'];
+    }
+    elseif (!empty($item['content'])) {
+    	$item['description'] = $item['content'];
+    }
+
+    // Try to resolve and parse the item's publication date.
+    $date = '';
+    foreach (array('pubdate', 'dc:date', 'dcterms:issued', 'dcterms:created', 'dcterms:modified', 'issued', 'created', 'modified', 'published', 'updated') as $key) {
+      if (!empty($item[$key])) {
+        $date = $item[$key];
+        break;
+      }
+    }
+
+    $item['timestamp'] = strtotime($date);
+
+    if ($item['timestamp'] === FALSE) {
+      $item['timestamp'] = aggregator_parse_w3cdtf($date); // Aggregator_parse_w3cdtf() returns FALSE on failure.
+    }
+
+    // Resolve dc:creator tag as the item author if author tag is not set.
+    if (empty($item['author']) && !empty($item['dc:creator'])) {
+      $item['author'] = $item['dc:creator'];
+    }
+
+    $item += array('author' => '', 'description' => '');
+
+    // Store on $feed object. This is where processors will look for parsed items.
+    $feed->items[] = $item;
+  }
+  return TRUE;
+}

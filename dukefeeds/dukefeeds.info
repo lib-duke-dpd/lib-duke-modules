@@ -1,0 +1,4 @@
+name = Duke Feed
+description = Provides custom parsing for Duke Library Blog feeds, not available from default aggregator module.
+core = 7.x
+package = Duke Feeds

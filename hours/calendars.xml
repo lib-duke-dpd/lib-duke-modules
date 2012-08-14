@@ -1,0 +1,31 @@
+<?xml version='1.0' standalone='yes'?>
+<libraries>
+	<calendar id="gavudiri8870fu7oie7o8up7rk">
+		<libraryName>Perkins/Bostock Libraries</libraryName>
+		<libraryId>perkins</libraryId>
+	</calendar>
+	<calendar id="k1jgaoblhr60opsf5495g03s4o">
+		<libraryName>Lilly Library</libraryName>
+		<libraryId>lilly</libraryId>
+	</calendar>
+	<calendar id="8dcuklhi7984oqd7fs1tgdu8fs">
+		<libraryName>General Public Hours</libraryName>
+		<libraryId>public</libraryId>
+	</calendar>
+	<calendar id="i97kj6o04evmd28rn52usc3lss">
+		<libraryName>David M. Rubenstein Rare Book &amp; Manuscript Library</libraryName>
+		<libraryId>rbmscl</libraryId>
+	</calendar>
+	<calendar id="4ln70ldn6a8cu9u619mtiqd4oo">
+		<libraryName>Music Library</libraryName>
+		<libraryId>music</libraryId>
+	</calendar>
+	<calendar id="f6bl40r4qasf9ct6ka8l8j6bks">
+		<libraryName>University Archives</libraryName>
+		<libraryId>archives</libraryId>
+	</calendar>
+	<calendar id="602ktcmv64c8ljue6r44cn6kkc">
+		<libraryName>Library Service Center</libraryName>
+		<libraryId>lsc</libraryId>
+	</calendar>
+</libraries>

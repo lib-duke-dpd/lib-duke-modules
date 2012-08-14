@@ -1,0 +1,27 @@
+.hoursTable {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.9em;
+}
+.hoursTable div.container {
+	border-bottom: 1px solid #C1C1C1;
+}
+div.dukeusers {
+	font-weight: bold;
+}
+	div.dukeusers .hours {
+		float: right;
+		text-align: right;
+	}
+div.genpublic {
+	text-align: right;
+}
+div.hour-row {
+	border-top: 1px solid #C1C1C1;
+	padding: 2px 2px;
+}
+div.today {
+	background-color: #F3F3F3;
+}
+/* The below setting could be overriden in the template 
+   that displays this element */
+div.toggle-trigger {}

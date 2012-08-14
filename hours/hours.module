@@ -1,0 +1,152 @@
+<?php
+
+/**
+ * Implements hook_help()
+ */
+function hours_help($path, $arg) {
+	switch ($path) {
+		case 'admin/help#hours':
+			return '<p>' . t('Displays Duke Library Hours dadta') . '</p>';
+			break;
+	}
+}
+
+/**
+ * Implements hook_theme().
+ */
+function hours_theme() {
+	return array(
+		'hours_block_item' => array(
+			'variables' => array('duke' => NULL, 'public' => NULL),
+		),
+		'hours_block_items' => array(
+			'variables' => array('items' => NULL),
+		),
+        'hours_monthview' => array(
+            'variables' => array('calendar' => NULL),
+        ),
+	);
+}
+
+/**
+ * Implements hours_menu()
+ */
+function hours_menu() {
+	$items = array();
+	
+	$items['hours/%hours_calendar'] = array(
+		'page callback' => 'hours_view_calendar',
+		'page arguments' => array(1),
+		'file' => 'hours.pages.inc',
+		'access callback' => TRUE,
+	);
+	#$items['hours/month'] = array(
+	#	'title' => 'Library Hours by Month',
+	#	'description' => 'Library Hours by Month',
+	#	'page callback' => 'hours_by_month_callback',
+	#	'access arguments' => TRUE,
+	#);
+	return $items;
+	#return array();
+}
+
+function hours_calendar_load($calendar_id) {
+    // load Google calendar data for this $calendar_id (i.e. 'perkins')
+
+    return array('calendar' => $calendar_id);
+}
+
+/**
+ * Implements hook_block_info()
+ */
+function hours_block_info() {
+	$blocks['frontpage'] = array(
+		'info'	=> t('4-day display of Perkins Library hours'),
+		'cache'	=> DRUPAL_NO_CACHE,
+	);
+	return $blocks;
+}
+
+function hours_by_month_callback() {
+	return t('This is a test of the emergency broadcast system.');
+}
+
+/**
+ * Implements hook_block_view()
+ */
+function hours_block_view($delta='') {
+	if ($delta == 'frontpage') {
+		$calendarManager = CalendarManager::newCalendarManager(drupal_get_path('module', 'hours') . '/calendars.xml');
+        $options = array(
+            'firstDay' => date('l'),
+            'numEvents' => 4,
+			'libraries' => array('perkins','public'),
+        );
+        $calendarManager->fetchHours($options, newApiCalendarService(), time());
+        $hours = $calendarManager->hours;
+		$items = array();
+	
+        $perkins = $hours['assocTable']['perkins']['hoursData'];
+        $public = $hours['assocTable']['public']['hoursData'];
+		for ($i = 0; $i < count($perkins); $i++) {
+			$items[] = theme('hours_block_item', array('duke' => $perkins[$i], 'public' => $public[$i]));
+		}
+		watchdog('hours_block_view', print_r($items, TRUE));
+		//$block['content'] = '<p>' . t('Hours table output coming soon to Drupal!') . '</p>';
+		$block['content'] = theme('hours_block_items', array('items' => $items));
+		$block['subject'] = 'Perkins/Bostock Hours';
+		//dpm($block);
+		return $block;
+	}
+	return ':)';
+}
+
+/**
+ * Implements hook_preprocess_block
+ *
+ */
+function hours_preprocess_block(&$vars) {
+	if ($vars['block']->delta == 'frontpage') {
+		$vars['classes_array'][] = 'hoursTable';
+	}
+}
+
+/**
+ * Returns HTML for individual hours row (for frontpage block).
+ *
+ * @param $variables
+ *   An associative array containing:
+ *   - item: hour row (with Perkins hours and Public hours)
+ *
+ * @ingroup themeable
+ */
+function theme_hours_block_item($vars) {
+    $block_item = '<div class="hour-row';
+    if ($vars['duke']->isCurrentDay) {
+    	$block_item .= ' today';
+    }
+    $block_item .= '">';
+    $block_item .= '<div class="dukeusers">'
+		 		. '<div class="hours">' . $vars['duke']->hours . '</div>'
+		 		. '<div class="title">' 
+		 		. sprintf('%s %s', $vars['duke']->libraryDate['shortDay'], $vars['duke']->libraryDate['dateStr']) 
+		 		. '</div>'
+		 		. '</div>'
+		 		. '<div class="genpublic">Public: ' . $vars['public']->hours . '</div>'
+		 		. '</div>'
+		 ;
+	return $block_item;
+}
+
+function theme_hours_block_items($vars) {
+	$s = '<div class="container">';
+
+	foreach ($vars['items'] as $item) {
+		$s .= sprintf("%s", $item);
+	}
+
+	$s .= '</div>';
+
+	return $s;
+}
+
