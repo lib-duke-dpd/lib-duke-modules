@@ -62,7 +62,7 @@ function discovery_library() {
 	return $libraries;
 }
 function discovery_block_info() {
-	$blocks['discovery_searchbox'] = array(
+	$blocks['searchbox'] = array(
 		'info'	=> t('Discovery Multi-Tab Search Box'),
 		'cache'	=> DRUPAL_CACHE_PER_ROLE,
 	);
@@ -78,7 +78,7 @@ function discovery_block_view($delta = '') {
 }
 
 function theme_discovery_searchbox($variables) {
-	dpm($variables['tabs']);
+	//dpm($variables['tabs']);
 	return '<div>' . t('This is what it looks like from the upper deck') . '</div>';
 }
 
