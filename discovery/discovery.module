@@ -20,11 +20,47 @@ function discovery_menu() {
 function discovery_theme() {
 	return array(
 		'discovery_searchbox' => array(
-			'variables'	=> array('myparam' => NULL)
+			'variables'	=> array('tabs' => NULL),
+			'template' => 'discovery-searchbox',
+		),
+		'discovery_searchbox_tab_all' => array(
+			'variables'	=> array('config' => NULL),
+			'file' => 'discovery.searchbox.inc',
+			'template' => 'discovery-searchbox-tab-all',
+		),
+		'discovery_searchbox_tab_catalog' => array(
+			'variables'	=> array('config' => NULL),
+			'file' => 'discovery.searchbox.inc',
+			'template' => 'discovery-searchbox-tab-catalog',
+		),
+		'discovery_searchbox_tab_ejournals' => array(
+			'variables'	=> array('config' => NULL),
+			'file' => 'discovery.searchbox.inc',
+			'template' => 'discovery-searchbox-tab-ejournals',
+		),
+		'discovery_searchbox_tab_databases' => array(
+			'variables'	=> array('config' => NULL),
+			'file' => 'discovery.searchbox.inc',
+			'template' => 'discovery-searchbox-tab-databases',
 		),
 	);
 }
 
+function discovery_library() {
+	$libraries['lib-searchbox'] = array(
+		'title' => 'Discovery Widget Library',
+		'version' => '1.0.1',
+		'css' => array(
+			drupal_get_path('module', 'discovery') . '/css/discovery.css' => array(
+				'type' => 'file',
+				'media' => 'all',
+				'group' => CSS_DEFAULT,
+				'weight' => 6,
+			),
+		),
+	);
+	return $libraries;
+}
 function discovery_block_info() {
 	$blocks['discovery_searchbox'] = array(
 		'info'	=> t('Discovery Multi-Tab Search Box'),
@@ -42,6 +78,7 @@ function discovery_block_view($delta = '') {
 }
 
 function theme_discovery_searchbox($variables) {
+	dpm($variables['tabs']);
 	return '<div>' . t('This is what it looks like from the upper deck') . '</div>';
 }
 
@@ -51,7 +88,32 @@ function discovery_show_searchbox() {
 	// If no theme has defined a custom template for this
 	// for instance, block--discovery--searchbox.tpl.php
 	// then, the above 'theme_searchbox' function will be invoked.
-	$block['content'] = theme('discovery_searchbox', array());
+	$tabs = array();
+	$tabs[] = array(
+		'label' => 'ALL',
+		'id' => 'allTab',
+		'title' => 'New default search - search articles, books, journals &#38; more',
+		'content' => theme('discovery_searchbox_tab_all'),
+	);
+	$tabs[] = array(
+		'label' => 'Catalog',
+		'id' => 'catalogTab',
+		'content' => theme('discovery_searchbox_tab_catalog'),
+	);
+	$tabs[] = array(
+		'label' => 'eJournal Titles',
+		'id' => 'ejournalsTab',
+		'content' => theme('discovery_searchbox_tab_ejournals'),
+	);
+	$tabs[] = array(
+		'label' => 'Databases',
+		'id' => 'databasesTab',
+		'content' => theme('discovery_searchbox_tab_databases'),
+	);
+	
+	//dpm($all_tab);
+	$block['content'] = theme('discovery_searchbox', array('tabs' => $tabs));
+	watchdog('discovery_show_searchbox', print_r($block, TRUE));
 	return $block;
 }
 
@@ -67,7 +129,7 @@ function discovery_preprocess_block(&$vars) {
 		drupal_add_js('http://library.duke.edu/javascript/blue-note/home-search-box-extras.js', 'external');
 		drupal_add_js('http://autosuggest.trln.org/plugins/jquery.trln.autocomplete.js', 'external');
 		drupal_add_js('http://autosuggest.trln.org/plugins/jquery.trln.autosuggest.js', 'external');
-		drupal_add_css('http://library.duke.edu/css/blue-note/page-specific/home-page/home-search-box.css', 'external');
 		drupal_add_css('http://autosuggest.trln.org/plugins/DUKE_autosuggest.css', 'external');
+		drupal_add_library('discovery', 'lib-searchbox', FALSE);
 	}
 }

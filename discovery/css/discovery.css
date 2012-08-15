@@ -1,0 +1,100 @@
+/* ------------------------------------
+Library homepage search box styles
+------------------------------------ */
+
+div#searchTabs {  width:100%; margin:0;  float:left; clear: both; line-height:normal; text-align:center; }
+div#searchTabs ul { padding: 5px 0 0 0; list-style:none outside none; margin:0; display: block; visibility: visible !important;}
+div#searchTabs ul li { display:inline; font-weight:bold;	margin:0 auto; padding:0; position:relative; visibility: visible !important; }
+
+div#searchTabs ul li.currentSearchTab {  background:url("http://library.duke.edu/imgs/blue-note/homepage/tab-left.gif") no-repeat top left transparent; background-position:0 -113px !important;  position: relative; padding:0 0 0 0; margin:0 auto; text-decoration:none; }
+
+div#searchTabs ul li a { background:url("http://library.duke.edu/imgs/blue-note/homepage/tab-left.gif") no-repeat scroll left top transparent; padding:0 0 0 9px; float:left; margin:0 auto; text-decoration:none; position:relative; outline: none;}
+
+
+div#searchTabs ul li a span { background:url("http://library.duke.edu/imgs/blue-note/homepage/tab-right.gif") no-repeat scroll right top transparent; color:#003366;	padding:5px 12px 4px 4px; float:none; display:block;}
+div#searchTabs ul li.currentSearchTab, div#searchTabs ul li.currentSearchTab a,  div#searchTabs ul li a:hover {background-position:0% -113px !important; color: #fff;}
+div#searchTabs ul li.currentSearchTab a span,  div#searchTabs ul li a:hover span { background-position: 100% -113px !important; color: #fff;}
+
+div#searchTabs ul li sup { font-size: 90%; vertical-align: baseline; color: green; }
+div#searchTabs ul li a:hover sup { color: #b1fb17; }
+div#searchTabs ul li.currentSearchTab sup { color: #b1fb17; }
+#allTab span { width: 40px; }
+
+li.showMe { display: block; visibility: visible !important;}
+
+	#searchBox {  float: left; width: 559px; margin: -1px 0 10px 0; font-weight: bold; background-color: #283f8c; border: 1px solid #203370; border-radius: 0px 5px 5px 5px; -moz-border-radius: 0px 5px 5px 5px; -webkit-border-radius: 0px 5px 5px 5px;}
+	#searchBox a { text-decoration: none; font-weight: normal;}
+	#searchBox a:hover { text-decoration: underline;}
+	.searchBoxContent { text-align: center;}
+
+#searchBox form { }
+#searchBox input { font-size: 13px; padding: 1px 5px; vertical-align: top;}
+
+
+.sectionTitleRule {background: url(http://library.duke.edu/imgs/blue-note/dot_line.gif) repeat-x top left; margin: 5px 0 5px 0; height: 7px;}
+
+
+div.tabContentUpper { margin: 20px 10px 10px 10px; height: 60px;}
+div.tabContentLower { border-top: 1px solid #203370; background: url(http://library.duke.edu/imgs/common/effects/gradient_tan4.jpg) repeat-x top left #eceae1; padding: 2px 10px 2px 2px; margin: 0;  border-radius: 0px 0px 5px 5px; -moz-border-radius: 0px 0px 5px 5px; -webkit-border-radius: 0px 0px 5px 5px; }
+
+p.searchOptionsPrimary { text-align: left; margin: 0;}
+p.searchOptionsSecondary { text-align: left; color: #fff; margin: 5px 0 0 0; font-weight: normal;}
+  p.searchOptionsSecondary input { margin-left: 10px;}
+  p.searchOptionsSecondary label { }
+
+p.searchOptionsTertiary { text-align: right; font-size: 90%; margin-top: 8px; color: #203370; margin: 0.75em 0;}
+p.searchOptionsTertiary a { }
+
+p.checkboxes { text-align: left; color: white; font-weight: normal; }
+p.checkboxes {
+	margin: 0.75em 0 !important;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+}
+p.checkboxes span,
+p.checkboxes label,
+p.checkboxes input { vertical-align: baseline !important; }
+p.checkboxes input { margin-right: 3px !important; }
+p.checkboxes label { font-weight: normal; }
+
+#searchBox select { padding: 2px; height: 25px; vertical-align: top; font-size: 12px; margin: 0;}
+#searchBox select option { font-size: 12px; padding: 3px; margin: 0;}
+
+
+#searchBox input.styledSearchButton {  vertical-align: top; cursor: pointer;
+color: #fff; height: 23px; font-weight: bold;
+border-radius:3px; -moz-border-radius:  3px; -webkit-border-radius:  3px;
+background: url(http://library.duke.edu/imgs/common/effects/searchbuttongray.jpg) repeat-x top left #777; margin: 0; padding: 3px 5px; border: 1px solid #ccc;
+box-shadow: 5px 5px 3px #203370; -moz-box-shadow:  5px 5px 3px #203370;  -webkit-box-shadow:  5px 5px 3px #203370;
+}
+#searchBox input.styledSearchButton:hover { background: #999;}
+#searchBox .styledSearchButton_small { display: none;}
+
+div.moreResources {  background: #f3f3f3; color: #555; border: 1px solid #ccc; border-radius:3px; -moz-border-radius:  3px; -webkit-border-radius:  3px; width: 551px; padding: 4px 0 4px 7px; margin-bottom: 5px;}
+div.moreResources a {text-decoration: none;}
+div.moreResources a:hover {text-decoration: underline;}
+div.moreResources a { border: none; margin: 0; padding: 0;}
+div.moreResources a img { margin-right: 2px; border: none;}
+
+div.digCollImages { float: right; margin-left: 20px; margin-right: 2px; }
+div.digCollImages a { float: right; border: none; margin: 0; padding: 0;}
+div.digCollImages img { margin-right: 2px; padding: 0; border: none;}
+
+div.searchFeedback { font-weight: bolder; font-size: larger; color: #b1fb17; padding: 4px; text-align: center; float: right; width: 150px; margin-top: -2.5em; }
+div.searchFeedback a:link, div.searchFeedback a:active, div.searchFeedback a:visited, span.whatSearch a:link, span.whatSearch a:active, span.whatSearch a:visited, p.whatSearch a:link, p.whatSearch a:active, p.whatSearch a:visited { color: #b1fb17; text-decoration: underline !important; }
+div.searchFeedback a:hover, p.whatSearch a:hover { color: #b1fb17; text-decoration: none !important; }
+p.whatSearch { font-weight: bolder; color: #b1fb17; text-align: left; }
+span.whatSearch { color: #b1fb17; padding-left: 2em; }
+
+#whatAll, #whatCatalog, #whatJournals, #whatDatabases {
+	padding: 0.25em 1em;
+	background-color: #edece9;
+	box-shadow: inset 0px 1px 5px 1px rgba(0, 0, 0, 0.5);
+	font-weight: normal;
+	text-align: left;
+}
+#whatAll ul, #whatCatalog ul, #whatJournals ul, #whatDatabases ul { list-style-type: none; list-style-image: url(/img/section/generic_dot.gif); font-weight: normal;}
+#whatAll ul li, #whatCatalog ul li, #whatJournals ul li, #whatDatabases ul li { margin-bottom: .25em; }
+.closeWhat { width: 100%; height: 2em; }
+.closeWhatButton { float: right; width: 5em; padding: 0.1em; text-align: center; font-size: smaller; color: #929292; border: 1px solid #929292; border-radius: 5px; background-color: #d9dacc; }
+.closeWhatButton a { color: #929292; }
