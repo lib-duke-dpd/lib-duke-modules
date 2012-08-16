@@ -50,6 +50,9 @@ function discovery_library() {
 	$libraries['lib-searchbox'] = array(
 		'title' => 'Discovery Widget Library',
 		'version' => '1.0.1',
+		'js' => array(
+			drupal_get_path('module', 'discovery') . '/js/discovery.js' => array(),
+		),
 		'css' => array(
 			drupal_get_path('module', 'discovery') . '/css/discovery.css' => array(
 				'type' => 'file',
@@ -83,7 +86,7 @@ function theme_discovery_searchbox($variables) {
 }
 
 function discovery_show_searchbox() {
-	$block['subject'] = '';
+	$block['subject'] = 'Search Resources';
 	
 	// If no theme has defined a custom template for this
 	// for instance, block--discovery--searchbox.tpl.php
