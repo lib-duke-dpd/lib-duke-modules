@@ -2,7 +2,7 @@
 
 function discovery_help($path, $arg) {
 	switch ($path) {
-		case "admim/help#mymod":
+		case "admim/help#discover":
 			return '<p>' . t("Display a Multi-Tabbed Search Box on the Frontpage.") . '</p>';
 			break;
 	}
