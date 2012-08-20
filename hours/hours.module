@@ -91,7 +91,7 @@ function hours_block_view($delta='') {
 		for ($i = 0; $i < count($perkins); $i++) {
 			$items[] = theme('hours_block_item', array('duke' => $perkins[$i], 'public' => $public[$i]));
 		}
-		watchdog('hours_block_view', print_r($items, TRUE));
+		#watchdog('hours_block_view', print_r($items, TRUE));
 		//$block['content'] = '<p>' . t('Hours table output coming soon to Drupal!') . '</p>';
 		$block['content'] = theme('hours_block_items', array('items' => $items));
 		$block['subject'] = 'Perkins/Bostock Hours';
