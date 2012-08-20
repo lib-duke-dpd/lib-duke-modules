@@ -1,0 +1,4 @@
+name = Duke UI Widgets
+description = Provides Widgets common across Duke Library web pages.
+core = 7.x
+package = Duke Library UI
