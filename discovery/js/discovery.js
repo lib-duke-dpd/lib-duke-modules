@@ -6,7 +6,7 @@ function unhide(divID) {
 }
 
 (function($) {
-	Drupal.behaviors.mymod = {
+	Drupal.behaviors.discovery = {
 		attach: function(context, settings) {
 			$('input.hasHint').focus(function() {
 				if ($(this).val() == "" || $(this).val() == $(this).attr('title')){
@@ -35,7 +35,7 @@ function unhide(divID) {
 				$('#summon_bookreviews').attr('checked', bookreview_bool);
 				$('#summon_newspaper').attr('checked', newspaper_bool);
 			});
-		
+
 			var catalogAutoSuggestInputIDsObject = {
 				suggestUrl: "http://autosuggest.trln.org/suggestservice/",
 				indexInput: "#catalogcodeinput",
@@ -44,6 +44,9 @@ function unhide(divID) {
 				queryForm: "form[name='searchCatalog']",
 				querySubmit: "#catalogsubmit"
 			}; // clearIndexOnFirstFocus: true, clearIndexOnFirstChange: false (for auto-focus forms)
+			if ($('#catalogqueryinput').size() > 0) {
+				console.log($('#catalogqueryinput'));
+			}
 			$("#catalogqueryinput").autosuggest(catalogAutoSuggestInputIDsObject);
 
 		}

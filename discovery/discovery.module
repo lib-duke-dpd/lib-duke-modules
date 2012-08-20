@@ -43,6 +43,10 @@ function discovery_theme() {
 			'file' => 'discovery.searchbox.inc',
 			'template' => 'discovery-searchbox-tab-databases',
 		),
+		'discovery_digicoll' => array(
+			'variables' => array(),
+			'template' => 'discovery-digicoll',
+		),
 	);
 }
 
@@ -115,7 +119,9 @@ function discovery_show_searchbox() {
 	);
 	
 	//dpm($all_tab);
-	$block['content'] = theme('discovery_searchbox', array('tabs' => $tabs));
+	$block['content'] = theme('discovery_searchbox', array('tabs' => $tabs))
+		. theme('discovery_digicoll', array());
+		
 	#watchdog('discovery_show_searchbox', print_r($block, TRUE));
 	return $block;
 }

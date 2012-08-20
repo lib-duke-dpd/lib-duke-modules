@@ -43,7 +43,7 @@ p.searchOptionsSecondary { text-align: left; color: #fff; margin: 5px 0 0 0; fon
   p.searchOptionsSecondary input { margin-left: 10px;}
   p.searchOptionsSecondary label { }
 
-p.searchOptionsTertiary { text-align: right; font-size: 90%; margin-top: 8px; color: #203370; margin: 0.75em 0;}
+p.searchOptionsTertiary { text-align: right; font-size: 0.80em; margin-top: 8px; color: #203370; margin: 0.75em 0;}
 p.searchOptionsTertiary a { }
 
 p.checkboxes { text-align: left; color: white; font-weight: normal; }
@@ -71,11 +71,12 @@ box-shadow: 5px 5px 3px #203370; -moz-box-shadow:  5px 5px 3px #203370;  -webkit
 #searchBox input.styledSearchButton:hover { background: #999;}
 #searchBox .styledSearchButton_small { display: none;}
 
-div.moreResources {  background: #f3f3f3; color: #555; border: 1px solid #ccc; border-radius:3px; -moz-border-radius:  3px; -webkit-border-radius:  3px; width: 551px; padding: 4px 0 4px 7px; margin-bottom: 5px;}
+div.moreResources {  background: #f3f3f3; color: #555; border: 1px solid #ccc; border-radius:3px; -moz-border-radius:  3px; -webkit-border-radius:  3px; width: 100%; padding: 4px 0 4px 7px; margin-bottom: 5px;}
 div.moreResources a {text-decoration: none;}
 div.moreResources a:hover {text-decoration: underline;}
 div.moreResources a { border: none; margin: 0; padding: 0;}
 div.moreResources a img { margin-right: 2px; border: none;}
+div.moreResources p { font-size: 0.85em; }
 
 div.digCollImages { float: right; margin-left: 20px; margin-right: 2px; }
 div.digCollImages a { float: right; border: none; margin: 0; padding: 0;}
