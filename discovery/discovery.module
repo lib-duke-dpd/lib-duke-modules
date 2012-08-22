@@ -55,9 +55,17 @@ function discovery_library() {
 		'title' => 'Discovery Widget Library',
 		'version' => '1.0.1',
 		'js' => array(
+			drupal_get_path('module', 'discovery') . '/js/home-search-box.js' => array(),
+			drupal_get_path('module', 'discovery') . '/js/home-search-box-extras.js' => array(),
+			drupal_get_path('module', 'discovery') . '/js/jquery.trln.autocomplete.js' => array(),
+			drupal_get_path('module', 'discovery') . '/js/jquery.trln.autosuggest.js' => array(),
 			drupal_get_path('module', 'discovery') . '/js/discovery.js' => array(),
 		),
 		'css' => array(
+			'http://autosuggest.trln.org/plugins/DUKE_autosuggest.css' => array(
+				'type' => 'external',
+				'media' => 'all',
+			),
 			drupal_get_path('module', 'discovery') . '/css/discovery.css' => array(
 				'type' => 'file',
 				'media' => 'all',
@@ -134,11 +142,11 @@ function discovery_show_searchbox() {
  */
 function discovery_preprocess_block(&$vars) {
 	if ($vars['block']->delta == 'searchbox') {
-		drupal_add_js('http://library.duke.edu/javascript/blue-note/home-search-box.js', 'external');
-		drupal_add_js('http://library.duke.edu/javascript/blue-note/home-search-box-extras.js', 'external');
-		drupal_add_js('http://autosuggest.trln.org/plugins/jquery.trln.autocomplete.js', 'external');
-		drupal_add_js('http://autosuggest.trln.org/plugins/jquery.trln.autosuggest.js', 'external');
-		drupal_add_css('http://autosuggest.trln.org/plugins/DUKE_autosuggest.css', 'external');
+		#drupal_add_js('http://library.duke.edu/javascript/blue-note/home-search-box.js', 'external');
+		#drupal_add_js('http://library.duke.edu/javascript/blue-note/home-search-box-extras.js', 'external');
+		#drupal_add_js('http://autosuggest.trln.org/plugins/jquery.trln.autocomplete.js', 'external');
+		#drupal_add_js('http://autosuggest.trln.org/plugins/jquery.trln.autosuggest.js', 'external');
+		#drupal_add_css('http://autosuggest.trln.org/plugins/DUKE_autosuggest.css', 'external');
 		drupal_add_library('discovery', 'lib-searchbox', FALSE);
 	}
 }
