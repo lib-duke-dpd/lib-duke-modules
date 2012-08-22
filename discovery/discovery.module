@@ -62,8 +62,8 @@ function discovery_library() {
 			drupal_get_path('module', 'discovery') . '/js/discovery.js' => array(),
 		),
 		'css' => array(
-			'http://autosuggest.trln.org/plugins/DUKE_autosuggest.css' => array(
-				'type' => 'external',
+			drupal_get_path('module', 'discovery') . '/css/DUKE_autosuggest.css' => array(
+				'type' => 'file',
 				'media' => 'all',
 			),
 			drupal_get_path('module', 'discovery') . '/css/discovery.css' => array(
