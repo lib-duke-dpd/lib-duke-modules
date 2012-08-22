@@ -47,7 +47,15 @@ function unhide(divID) {
 			if ($('#catalogqueryinput').size() > 0) {
 				console.log($('#catalogqueryinput'));
 			}
-			$("#catalogqueryinput").autosuggest(catalogAutoSuggestInputIDsObject);
+			// use try/catch to allow all other UI elements to initialize 
+			// in the event of an unexpected(!) error here.
+			try {
+				$("#catalogqueryinput").autosuggest(catalogAutoSuggestInputIDsObject);
+			} catch(err) {
+				if (console.log != undefined) {
+					console.log(err);
+				}
+			}
 
 		}
 	};
