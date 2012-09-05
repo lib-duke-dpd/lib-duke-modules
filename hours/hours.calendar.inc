@@ -15,15 +15,28 @@ function newApiCalendarService()
 	return $service;
 }
 
+/**
+ * We use this function in 'CalendarManager::fetchMonth()'
+ * if the PHP version doesn't support 'closures' (anonymous functions)
+ */
+function libCalFilter($var)
+{
+	return $var['libraryId'] == $GLOBALS['searchLibId'];
+}
+
 class CalendarManager
 {
+	public static $_instance = NULL;
+	
 	protected $_calendarMap = array();
+	protected $_googleCalendarId = array();
 	protected $_availableCalendars = array();
-	protected $_sourceFile = 'calendars.xml';
+	protected $_sourceFile;
 	protected $_defaultNumEvents = 7;
 	protected $_calendarMode = 'week';
 	protected $_lastStartTime = NULL;
 	protected $_monthEvents = array();
+	protected $_monthEventsHash = array();
 	
 	/**
 	 * @Date array
@@ -44,8 +57,11 @@ class CalendarManager
 	
 	private $_startTime;
 	
-	public function __construct($loadNow = FALSE)
+	private $_numEventsRequested;
+	
+	private function __construct($loadNow = FALSE)
 	{
+		$this->_sourceFile = drupal_get_path('modules', 'hours') . '/calendars.xml';
 		if ($loadNow) {
 			$this->readCalendarMap();
 		}
@@ -70,6 +86,17 @@ class CalendarManager
 		$this->_prevStartTime = $startTime - (86400 * 7);
 	}
 	
+	public static function getInstance($sourceFile = NULL) {
+		if (!self::$_instance) {
+			self::$_instance = new CalendarManager(FALSE);
+			if (isset($sourceFile)) {
+				self::$_instance->sourceFile = $sourceFile;
+			}
+			self::$_instance->readCalendarMap();
+		}
+		return self::$_instance;
+	}
+		
 	public static function newCalendarManager($sourceFile)
 	{
 		$obj = new CalendarManager(FALSE);
@@ -158,6 +185,13 @@ class CalendarManager
 		return $this->_defaultNumEvents;
 	}
 	
+	public function getGoogleCalendarIdForLibId($libId) {
+		if (isset($this->_googleCalendarId[$libId])) {
+			return $this->_googleCalendarId[$libId];
+		}
+		return NULL;
+	}
+	
 	public function getHours()
 	{
 		$return = array(
@@ -184,14 +218,28 @@ class CalendarManager
 		return $return;
 	}
 	
-	public function getMonthEvents()
+	public function getMonthEvents($fromHash = FALSE)
 	{
-		return $this->_monthEvents;
+		if ($fromHash == FALSE) {
+			return $this->_monthEvents;
+		}
+		$keys = array_keys($this->_monthEventsHash);
+		sort($keys, SORT_NUMERIC);
+		$r = array();
+		foreach ($keys as $key) {
+			$r[] = $this->_monthEventsHash[$key];
+		}
+		return $r;
 	}
 	
 	public function getNextStartTime()
 	{
 		return $this->_nextStartTime;
+	}
+	
+	public function getNumEventsRequested()
+	{
+		return $this->_numEventsRequested;
 	}
 	
 	public function getPageData()
@@ -265,7 +313,9 @@ class CalendarManager
 		# when is the first Sunday
 		$firstSunday = $firstDayOfMonth - (86400 * (int)date('w', $firstDayOfMonth));
 		$lastSaturday = $lastDayOfMonth + ((6 - (int)date('w', $lastDayOfMonth)) * 86400);
-		$numEvents = (int)date('z', $lastSaturday) - (int)date('z', $firstSunday) + 1;
+
+		// MODIFIED to perform timestamp (second) math
+		$numEvents = (int) ((($lastSaturday - $firstSunday) + 1) / 86400);
 		
 		//echo sprintf("First Sunday = [%s]; Last Saturday is [%s]<br />\n", 
 		//	date('M j, Y', $firstSunday), date('M j, Y', $lastSaturday));
@@ -279,10 +329,16 @@ class CalendarManager
 		// find the calendarID for libId
 		$fn = function($var)
 		{
-			global $libId;
-			return $var['libraryId'] == $libId;
+			return $var['libraryId'] == $GLOBALS['searchLibId'];
 		};
-		$z = array_filter($this->availableCalendars, $fn);
+		$GLOBALS['searchLibId'] = $libId;
+		// Can we use the 'closure' feature?
+		if (version_compare(PHP_VERSION, '5.3.0') >= 0) {
+    		$z = array_filter($this->availableCalendars, $fn);
+		} else {
+			$z = array_filter($this->availableCalendars, 'libCalFilter');
+		}
+		#$z = array_filter($this->availableCalendars, $fn);
 		$entry = array_pop($z);
 		$calId = $entry['calId'];
 		
@@ -291,7 +347,20 @@ class CalendarManager
 		$monthEvents = array();
 		#$thisWeek = array();
 		foreach ($events->items as $eventItem) {
-			$this->_monthEvents[] = $this->_event_fc_object($eventItem);
+			$eventObject = $this->_event_fc_object($eventItem);
+			$key = mktime(0, 0, 0, 
+				$eventObject->start_date['mon'],
+				$eventObject->start_date['mday'],
+				$eventObject->start_date['year']);
+			$this->_monthEvents[] = $eventObject;
+			if (!isset($this->_monthEventsHash[$key])) {
+				$this->_monthEventsHash[$key] = $eventObject;
+			} else {
+				// if what is stored there now is "CLOSED" then ignore
+				if (preg_match('/closed/i', $this->_monthEventsHash[$key]->summary) == 0) {
+					$this->_monthEventsHash[$key] = $eventObject;
+				}
+			}
 		}
 	}
 	
@@ -386,15 +455,25 @@ class CalendarManager
 		$tmp = $this->_event_date_object($eventItem, NULL);
 		
 		$o->title = $tmp->hours;
-		$o->allDay = TRUE;
+		$o->summary = $eventItem->summary;
+		$o->allDay = $tmp->allDay;
 		$o->start = $tmp->timestamp;
-		
+		$o->start_date = getdate($o->start);
+		$o->libraryClosed = $tmp->libraryClosed;
+		if (isset($tmp->end)) {
+			$o->end = $tmp->end;
+			$o->end_date = getdate($o->end);
+		}
+		$o->removeAllDayCssClass = $tmp->removeAllDayCssClass;
 		return $o;
 	}
 	
 	protected function _event_date_object($eventItem, $libraryName)
 	{		
 		$object = new StdClass();
+		$object->allDay = FALSE;
+		$object->removeAllDayCssClass = FALSE;
+		$object->libraryClosed = FALSE;
 		
 		if (isset($eventItem->start->dateTime)) {
 			$convertedTime = strtotime($eventItem->start->dateTime);
@@ -413,17 +492,28 @@ class CalendarManager
 		);
 		$object->timestamp = $convertedTime;
 			
-		if ($eventItem->summary == 'Perkins Hours: Close at Midnight') {
-			$object->hours = 'Close at Midnight';
-		} else if ($eventItem->summary == 'CLOSED') {
-			$object->hours = 'Closed';
+		// the summary format for Perkins includes "Perkins: some hour criteria"
+		if (preg_match('/^(lilly|public|rubenstein|perkins|music|lsc):/i', $eventItem->summary) == 1) {
+			$object->hours = preg_replace('/^(lilly|public|rubenstein|perkins|music|lsc): /i', '', $eventItem->summary);
+			$object->hours = str_replace('-', ' &ndash; ', $object->hours);
+			$object->allDay = preg_match('/24 hours/i', $object->hours) == 1;
+			$object->removeAllDayCssClass = !$object->allDay;
+		} else if (preg_match('/closed/i', $eventItem->summary) == 1) {
+			$object->hours = 'CLOSED';
+			$object->allDay = TRUE;
+			$object->libraryClosed = TRUE;
 		} else if (isset($eventItem->start->dateTime)) {
 			$startDateTime = strtotime($eventItem->start->dateTime);
 			$endDateTime = strtotime($eventItem->end->dateTime);
-	
-			// we need to account for the special case when the 
-			// end date is actually 23:59
-			if (date('i', $endDateTime) == '59' && date('D', $endDateTime) == 'Sun') {
+			$object->start = $startDateTime;
+			$object->end = $endDateTime;
+		
+			if (preg_match('/24 hours/i', $eventItem->summary) == 1) {
+				$object->hours = 'Open 24 hours';
+				$object->allDay = TRUE;
+			} else if (date('i', $endDateTime) == '59' && date('D', $endDateTime) == 'Sun') {
+				// we need to account for the special case when the 
+				// end date is actually 23:59
 				// set the 'Hours' attribute to 'Open at <startTime>'
 				$object->hours = 'Open at ' . date('ga', $startDateTime);
 			} else {        
@@ -433,17 +523,21 @@ class CalendarManager
 				$_end = date('i', $endDateTime) == '00'
 					? date('ga', $endDateTime)
 					: date('g:ia', $endDateTime);
-				$object->hours = $_start . ' &ndash; ' . $_end;   
+				$object->hours = $_start . ' - ' . $_end;   
 			}
+			$object->removeAllDayCssClass = TRUE;
 		} else {
 			// we have a date
 			$startDate = strtotime($eventItem->start->date);
 			
 			if (date('D', $startDate) == 'Fri') {
 				$object->hours = 'Closes at Midnight';
+				$object->allDay = TRUE;
 			} else {
 				$object->hours = 'Open 24 Hours';
+				$object->allDay = TRUE;
 			}
+			$object->removeAllDayCssClass = TRUE;
 		}
 		return $object;
 	}
@@ -464,6 +558,7 @@ class CalendarManager
 					'title' => (string) $calendar->libraryName,
 					'id'	=> (string) $calendar->libraryId,
 				);
+				$this->_googleCalendarId[(string) $calendar->libraryId] = $newKey;
 				#$this->_calendarMap[$newKey] = (string) $calendar->libraryName;
 			}
 		} catch (Exception $e) {

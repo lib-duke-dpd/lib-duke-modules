@@ -25,3 +25,18 @@ div.today {
 /* The below setting could be overriden in the template 
    that displays this element */
 div.toggle-trigger {}
+
+#nextmonth { float: right; width: 105px; }
+#prevmonth { float: left; width: 105px; }
+
+.small.button3d { font-size: 11px; }
+.green.button3d { background-color: #0B6500 !important; }
+.button3d { 
+	font-family: verdana, arial, helvetica, sans-serif;
+	border: none;
+	dipslay: inline-block;
+	padding: 5px 10px 6px;
+	position: relative;
+	border-radius: 5px;
+}
+.cal_header h3 { text-align: center; }

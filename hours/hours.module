@@ -23,7 +23,8 @@ function hours_theme() {
 			'variables' => array('items' => NULL),
 		),
         'hours_monthview' => array(
-            'variables' => array('calendar' => NULL),
+            'variables' => array('events' => NULL, 'start_date' => NULL, 'now_date' => NULL),
+            'template' => 'hours_monthview',
         ),
 	);
 }
@@ -34,26 +35,32 @@ function hours_theme() {
 function hours_menu() {
 	$items = array();
 	
-	$items['hours/%hours_calendar'] = array(
+	$items['hours/month/%hours_library'] = array(
 		'page callback' => 'hours_view_calendar',
-		'page arguments' => array(1),
+		'page arguments' => array(2),
 		'file' => 'hours.pages.inc',
 		'access callback' => TRUE,
 	);
-	#$items['hours/month'] = array(
-	#	'title' => 'Library Hours by Month',
-	#	'description' => 'Library Hours by Month',
-	#	'page callback' => 'hours_by_month_callback',
-	#	'access arguments' => TRUE,
-	#);
+	$items['hours/day'] = array(
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('hours_day_form_callback'),
+		'file' => 'hours.pages.inc',
+		'access callback' => TRUE,
+	);
 	return $items;
-	#return array();
 }
 
-function hours_calendar_load($calendar_id) {
+function hours_library_load($libId) {
     // load Google calendar data for this $calendar_id (i.e. 'perkins')
-
-    return array('calendar' => $calendar_id);
+	if (!isset($libid)) {
+		$libid = 'perkins';
+	}
+	$calendarManager = CalendarManager::getInstance(
+		drupal_get_path('module', 'hours') . '/calendars.xml');
+		
+	$googleCalID = $calendarManager->getGoogleCalendarIdForLibId($libId);
+	
+    return array('googleCalID' => $googleCalID, 'libId' => $libId);
 }
 
 /**
@@ -75,30 +82,12 @@ function hours_by_month_callback() {
  * Implements hook_block_view()
  */
 function hours_block_view($delta='') {
-	if ($delta == 'frontpage') {
-		$calendarManager = CalendarManager::newCalendarManager(drupal_get_path('module', 'hours') . '/calendars.xml');
-        $options = array(
-            'firstDay' => date('l'),
-            'numEvents' => 4,
-			'libraries' => array('perkins','public'),
-        );
-        $calendarManager->fetchHours($options, newApiCalendarService(), time());
-        $hours = $calendarManager->hours;
-		$items = array();
-	
-        $perkins = $hours['assocTable']['perkins']['hoursData'];
-        $public = $hours['assocTable']['public']['hoursData'];
-		for ($i = 0; $i < count($perkins); $i++) {
-			$items[] = theme('hours_block_item', array('duke' => $perkins[$i], 'public' => $public[$i]));
-		}
-		#watchdog('hours_block_view', print_r($items, TRUE));
-		//$block['content'] = '<p>' . t('Hours table output coming soon to Drupal!') . '</p>';
-		$block['content'] = theme('hours_block_items', array('items' => $items));
-		$block['subject'] = 'Perkins/Bostock Hours';
-		//dpm($block);
-		return $block;
+	include_once DRUPAL_ROOT . '/' . drupal_get_path('module', 'hours') . '/hours.block.inc';
+	$fn_name = 'hours_block_view_' . $delta;
+	if (function_exists($fn_name)) {
+		return call_user_func($fn_name);
 	}
-	return ':)';
+	return t('No content to display');
 }
 
 /**
