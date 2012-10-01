@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * Implements hook_help
+ *
+ * Provides a basic help string in the administrator
+ */
 function discovery_help($path, $arg) {
 	switch ($path) {
 		case "admim/help#discover":
@@ -10,6 +14,8 @@ function discovery_help($path, $arg) {
 
 /**
  * Implements hook_menu()
+ *
+ * hook_menu is responsible for the routing mechanism
  */
 function discovery_menu() {
 	// TODO - expose some pages
@@ -17,6 +23,9 @@ function discovery_menu() {
 	return array();
 }
 
+/**
+ * Implements hook_theme
+ */
 function discovery_theme() {
 	return array(
 		'discovery_searchbox' => array(
@@ -50,6 +59,9 @@ function discovery_theme() {
 	);
 }
 
+/**
+ * Implements hook_library
+ */
 function discovery_library() {
 	$libraries['lib-searchbox'] = array(
 		'title' => 'Discovery Widget Library',
@@ -76,6 +88,14 @@ function discovery_library() {
 	);
 	return $libraries;
 }
+
+/**
+ * Implements hook_block_info
+ *
+ * This hook is responsible for providing block info
+ * to the list of available blocks in the admin/structure 
+ * page.
+ */
 function discovery_block_info() {
 	$blocks['searchbox'] = array(
 		'info'	=> t('Discovery Multi-Tab Search Box'),
@@ -84,6 +104,9 @@ function discovery_block_info() {
 	return $blocks;
 }
 
+/**
+ * Implements hook_block_view
+ */
 function discovery_block_view($delta = '') {
 	$fn_name = 'discovery_show_' . $delta;
 	if (function_exists($fn_name)) {
@@ -97,6 +120,9 @@ function theme_discovery_searchbox($variables) {
 	return '<div>' . t('This is what it looks like from the upper deck') . '</div>';
 }
 
+/**
+ * Called from discovery_block_view
+ */
 function discovery_show_searchbox() {
 	$block['subject'] = 'Search Resources';
 	
@@ -142,11 +168,6 @@ function discovery_show_searchbox() {
  */
 function discovery_preprocess_block(&$vars) {
 	if ($vars['block']->delta == 'searchbox') {
-		#drupal_add_js('http://library.duke.edu/javascript/blue-note/home-search-box.js', 'external');
-		#drupal_add_js('http://library.duke.edu/javascript/blue-note/home-search-box-extras.js', 'external');
-		#drupal_add_js('http://autosuggest.trln.org/plugins/jquery.trln.autocomplete.js', 'external');
-		#drupal_add_js('http://autosuggest.trln.org/plugins/jquery.trln.autosuggest.js', 'external');
-		#drupal_add_css('http://autosuggest.trln.org/plugins/DUKE_autosuggest.css', 'external');
 		drupal_add_library('discovery', 'lib-searchbox', FALSE);
 	}
 }
