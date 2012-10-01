@@ -1,0 +1,9 @@
+name = BlueSky
+description = A "Blue Sky" view on recreating and redesigning the Duke Library website
+
+; The minimum Drupal version supported by this module
+core = 7.x
+
+; The package (group) where this module will appear in the Module listing (for administrators)
+package = Duke Library UI
+

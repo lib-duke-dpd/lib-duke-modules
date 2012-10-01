@@ -1,0 +1,64 @@
+<?php
+
+/**
+ * Implements hook_help
+ *
+ */
+function bluesky_help($path, $arg) {
+	switch ($path) {
+		# notice the routing path.  This is common through Drupal modules
+		case 'admin/help#bluesky':
+			# funtion t() translates the supplied string based on the current language.
+			# this function is as core Drupal function and is used EVERYWHERE.
+			return '<p>' . t('Displays our Blue Sky view of the world.') . '</p>';
+			break;
+	}
+}
+
+/**
+ * Implements hook_menu
+ *
+ * NOTE: This function supplies routing information for this 
+ * module to the Drupal engine.
+ *
+ * @see: http://api.drupal.org/api/drupal/modules!system!system.api.php/function/hook_menu/7
+ *
+ * Here, we will provide a simple route (path) that maps to an even simpler callback function.
+ * "Callback functions" are part of the essence of Drupal programming.
+ */
+function bluesky_menu() {
+	# Another common practice among Drupal developers is the HEAVY use of arrays.
+	$routes = array();
+	
+	#?? This route is represented by the following URL
+	// http://yourdrupalsite/bluesky/helloworld
+	$routes['bluesky/helloworld'] = array(
+		// 'page callback' is the function that will be invoked when the above URL is given
+		'page callback' => 'bluesky_helloworld',
+		
+		// 'file' -- the "best practice" is to separate all "page (routing)" specific 
+		// functions in a file named <modulename>.pages.inc.
+		// However, for this basic example, the above callback function will reside in this .module file
+		# 'file' => 'bluesky.pages.inc',
+		
+		// this option can either simply return TRUE/FALSE, or be a function
+		// that returns TRUE/FALSE
+		'access callback' => TRUE,
+	);
+	
+	// Now that we've specified all of our interested routes, return it to the 
+	// Drupal engine
+	return $routes;
+}
+
+/**
+ * This is the page callback that is invoked when
+ * you (or an end user) types the following URL:
+ * http://yourdrupalsite/bluesky/helloworld
+ */
+function bluesky_helloworld() {
+	// simply return a "hello world" string..
+	
+	// Remember, I warned you that the t() function will be used EVERYWHERE :)
+	return '<p>' . t('Hello world') . '</p>';
+}
