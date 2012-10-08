@@ -68,6 +68,7 @@ function bluesky_helloworld() {
  * behavior of the form that displays options 
  * for a block
  */
-function bluesky_form_alter(&$form, &$form_state, $form_id) {
+function bluesky_form_block_admin_configure_alter(&$form, &$form_state, $form_id) {
 	dpm($form_id);
+	kpr($form);
 }
