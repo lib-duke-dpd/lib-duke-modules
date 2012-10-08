@@ -62,3 +62,12 @@ function bluesky_helloworld() {
 	// Remember, I warned you that the t() function will be used EVERYWHERE :)
 	return '<p>' . t('Hello world') . '</p>';
 }
+
+/**
+ * This is the first attempt to alter the display
+ * behavior of the form that displays options 
+ * for a block
+ */
+function bluesky_form_alter(&$form, &$form_state, $form_id) {
+	dpm($form_id);
+}
