@@ -138,3 +138,7 @@ function bluesky_add_css_classes_form_element(&$form, &$form_state = NULL) {
 	);
 	kpr($form);
 }
+
+function bluesky_block_save($delta, $edit) {
+	kpr($edit);
+}
