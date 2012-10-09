@@ -87,7 +87,7 @@ function bluesky_block_configure($delta='') {
 	if ($delta == 'bluesky_1') {
 		return array(
 			'mytext' => array(
-				'#type' => 'textarea',
+				'#type' => 'text_format',
 				'#title' => t('My Text Box'),
 			)
 		);
