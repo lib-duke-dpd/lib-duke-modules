@@ -81,3 +81,32 @@ function bluesky_form_block_admin_configure_alter(&$form, &$form_state, $form_id
 		'#value' => $form_state['css_classes'],
 	);
 }
+
+/**
+ * Implements hook_form_FORM_ID_alter()
+ *
+ * Attempt to add a 'css_classes' field to the form
+ * allowing the site administrator, or an individual who 
+ * understands HTML/CSS, to add one or more css classes.
+ *
+ * @param $form
+ *   Nested array of form elmeents that comprise the form
+ *
+ * @param $form_state
+ *   A keyed array containing the current state of the form
+ *
+ * @param $form_id
+ *   String representing the name of the form, in this case, 
+ *   'block_add_block_form'
+ */
+function bluesky_form_block_add_block_form_alter(&$form, &$form_state, $form_id) {
+	bluesky_add_css_classes_form_element($form);
+}
+
+function bluesky_add_css_classes_form_element(&$form) {
+	$form['css_classes'] = array(
+		'#type' => 'textfield',
+		'#description' => 'List of CSS classes assigned to this block.',
+		'#title' => 'Wrapper CSS class name(s)',
+	);
+}
