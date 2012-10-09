@@ -63,6 +63,38 @@ function bluesky_helloworld() {
 	return '<p>' . t('Hello world') . '</p>';
 }
 
+/**
+ * Implements hook_block_info
+ *
+ */
+function bluesky_block_info() {
+	return array(
+		'bluesky_1' => array(
+			'info' => 'Simple Bluesky Block with Textbox entry form.',
+			'cache' => DRUPAL_CACHE_PER_PAGE,
+		),
+		'bluesky_2' => array(
+			'info' => 'Very simple Bluesky block.',
+			'cache' => DRUPAL_CACHE_PER_ROLE,
+		),
+	);
+}
+
+/**
+ * Implements hook_block_configure
+ */
+function bluesky_block_configure($delta='') {
+	if ($delta == 'bluesky_1') {
+		return array(
+			'mytext' => array(
+				'#type' => 'textarea',
+				'#title' => t('My Text Box'),
+			)
+		);
+	);
+	return array();
+}
+
 function bluesky_form_alter(&$form, &$form_state, $form_id) {
 	//dpm($form_id);
 }
