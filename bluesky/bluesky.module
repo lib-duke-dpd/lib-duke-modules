@@ -116,6 +116,8 @@ function bluesky_form_block_add_block_form_alter(&$form, &$form_state, $form_id)
 	$form['visibility']['css_attributes']['css_element_id'] = array(
 		'#type' => 'textfield',
 		'#title' => 'Element CSS ID',
+		'#description' => 'Unique identifier for this screen element.',
+		'#size' => 25,
 	);
 }
 
