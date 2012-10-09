@@ -101,6 +101,22 @@ function bluesky_form_block_admin_configure_alter(&$form, &$form_state, $form_id
  */
 function bluesky_form_block_add_block_form_alter(&$form, &$form_state, $form_id) {
 	bluesky_add_css_classes_form_element($form);
+	$form['visibility']['css_attributes'] = array(
+		'#type' => 'fieldset',
+		'#collapsible' => TRUE,
+		'#collapsed' => TRUE,
+		'#group' => 'visibility',
+		'#title' => 'CSS Attributes',
+	);
+	$form['visibility']['css_attributes']['css_classes'] = array(
+		'#type' => 'textfield',
+		'#title' => 'Wrapper CSS class(es) for this block',
+		'#description' => 'List of CSS classes assigned to this block.',
+	);
+	$form['visibility']['css_attributes']['css_element_id'] = array(
+		'#type' => 'textfield',
+		'#title' => 'Element CSS ID',
+	);
 }
 
 function bluesky_add_css_classes_form_element(&$form) {
