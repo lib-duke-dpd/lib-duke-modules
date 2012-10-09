@@ -69,10 +69,11 @@ function bluesky_helloworld() {
  * for a block
  */
 function bluesky_form_block_admin_configure_alter(&$form, &$form_state, $form_id) {
-	dpm($form_id);
 	kpr($form);
 	$form['css_classes'] = array(
 		'#title' => 'Wrapper CSS Class Name(s)',
+		'#description' => 'List of CSS classes assigned to this block.',
 		'#type' => 'textfield',
+		'#value' => $form_state['css_classes'],
 	);
 }
