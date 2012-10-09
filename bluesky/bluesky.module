@@ -63,6 +63,10 @@ function bluesky_helloworld() {
 	return '<p>' . t('Hello world') . '</p>';
 }
 
+function bluesky_form_alter(&$form, &$form_state, $form_id) {
+	dpm($form_id);
+}
+
 /**
  * This is the first attempt to alter the display
  * behavior of the form that displays options 
