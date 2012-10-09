@@ -105,7 +105,7 @@ function bluesky_form_alter(&$form, &$form_state, $form_id) {
  * for a block
  */
 function bluesky_form_block_admin_configure_alter(&$form, &$form_state, $form_id) {
-	kpr($form_state);
+	//kpr($form_state);
 	bluesky_add_css_classes_form_element($form, $form_state);
 }
 
