@@ -130,6 +130,7 @@ function bluesky_add_css_classes_form_element(&$form) {
 		'#collapsible' => FALSE,
 		'#collapsed' => FALSE,
 		'#title' => 'CSS Attributes',
+		'#weight' => 1,
 	);
 	$form['css_attributes']['css_classes'] = array(
 		'#type' => 'textfield',
