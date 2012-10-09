@@ -64,7 +64,7 @@ function bluesky_helloworld() {
 }
 
 function bluesky_form_alter(&$form, &$form_state, $form_id) {
-	dpm($form_id);
+	//dpm($form_id);
 }
 
 /**
@@ -101,6 +101,7 @@ function bluesky_form_block_admin_configure_alter(&$form, &$form_state, $form_id
  */
 function bluesky_form_block_add_block_form_alter(&$form, &$form_state, $form_id) {
 	bluesky_add_css_classes_form_element($form);
+	/*
 	$form['visibility']['css_attributes'] = array(
 		'#type' => 'fieldset',
 		'#collapsible' => TRUE,
@@ -119,13 +120,26 @@ function bluesky_form_block_add_block_form_alter(&$form, &$form_state, $form_id)
 		'#description' => 'Unique identifier for this screen element.',
 		'#size' => 25,
 	);
+	*/
 }
 
 function bluesky_add_css_classes_form_element(&$form) {
 	kpr($form);
-	$form['css_classes'] = array(
+	$form['css_attributes'] = array(
+		'#type' => 'fieldset',
+		'#collapsible' => FALSE,
+		'#collapsed' => FALSE,
+		'#title' => 'CSS Attributes',
+	);
+	$form['css_attributes']['css_classes'] = array(
 		'#type' => 'textfield',
 		'#description' => 'List of CSS classes assigned to this block.',
 		'#title' => 'Wrapper CSS class name(s)',
+	);
+	$form['css_attributes']['css_element_id'] = array(
+		'#type' => 'textfield',
+		'#description' => 'Unique identifier for this screen element.',
+		'#size' => '20',
+		'#title' => 'Element CSS ID',
 	);
 }
