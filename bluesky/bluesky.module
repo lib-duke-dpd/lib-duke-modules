@@ -91,7 +91,7 @@ function bluesky_block_configure($delta='') {
 				'#title' => t('My Text Box'),
 			)
 		);
-	);
+	}
 	return array();
 }
 
