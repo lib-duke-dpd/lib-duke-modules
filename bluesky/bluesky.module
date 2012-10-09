@@ -74,12 +74,7 @@ function bluesky_form_alter(&$form, &$form_state, $form_id) {
  */
 function bluesky_form_block_admin_configure_alter(&$form, &$form_state, $form_id) {
 	kpr($form_state);
-	$form['css_classes'] = array(
-		'#title' => 'Wrapper CSS Class Name(s)',
-		'#description' => 'List of CSS classes assigned to this block.',
-		'#type' => 'textfield',
-		'#value' => $form_state['css_classes'],
-	);
+	bluesky_add_css_classes_form_element($form, $form_state);
 }
 
 /**
@@ -123,8 +118,7 @@ function bluesky_form_block_add_block_form_alter(&$form, &$form_state, $form_id)
 	*/
 }
 
-function bluesky_add_css_classes_form_element(&$form) {
-	kpr($form);
+function bluesky_add_css_classes_form_element(&$form, &$form_state = NULL) {
 	$form['css_attributes'] = array(
 		'#type' => 'fieldset',
 		'#collapsible' => FALSE,
@@ -142,4 +136,5 @@ function bluesky_add_css_classes_form_element(&$form) {
 		'#size' => '20',
 		'#title' => 'Element CSS ID',
 	);
+	kpr($form);
 }
