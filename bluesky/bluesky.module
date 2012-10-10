@@ -24,13 +24,12 @@ function bluesky_help($path, $arg) {
  * @see: http://api.drupal.org/api/drupal/modules!system!system.api.php/function/hook_menu/7
  *
  * Here, we will provide a simple route (path) that maps to an even simpler callback function.
- * "Callback functions" are part of the essence of Drupal programming.
  */
 function bluesky_menu() {
 	# Another common practice among Drupal developers is the HEAVY use of arrays.
 	$routes = array();
 	
-	#?? This route is represented by the following URL
+	// This route is represented by the following URL
 	// http://yourdrupalsite/bluesky/helloworld
 	$routes['bluesky/helloworld'] = array(
 		// 'page callback' is the function that will be invoked when the above URL is given
@@ -61,4 +60,40 @@ function bluesky_helloworld() {
 	
 	// Remember, I warned you that the t() function will be used EVERYWHERE :)
 	return '<p>' . t('Hello world') . '</p>';
+}
+
+/**
+ * Implements hook_block_info()
+ *
+ * This is the hook that allows a developer to define any and all 
+ * blocks that a site admin can choose from using the /admin/structure/blocks option.
+ *
+ * @returns array of block info items
+ */
+function bluesky_block_info() {
+	$blocks = array();
+
+	// each block is identified by a "delta" value.
+	// this value will become clear when working with the 
+	// hook_block_view hook.
+	$blocks['partly_cloudy'] = array(
+		// at a minimum, specify the 'info' for this block
+		'info' => t('Blue Sky, Partly Cloudy Block'),
+		'cache' => DRUPAL_NO_CACHE,
+	);
+	
+	$blocks['partly_sunny'] = array(
+		'info' => t('Blue Sky, Partly Sunny Block'),
+		'cache' => DRUPAL_NO_CACHE,	// don't cache this block at any time
+	);
+
+	// NOTE -- one can also dynamically create blocks if need be:
+	// pseudo code logic
+	// -----------------
+	// query data rows based on pre-defined criteria
+	// for each row:
+	//   create block using data from row, making sure each 'delta' is unique
+	//
+	
+	return $blocks;
 }
