@@ -24,20 +24,13 @@ function bluesky_help($path, $arg) {
  * @see: http://api.drupal.org/api/drupal/modules!system!system.api.php/function/hook_menu/7
  *
  * Here, we will provide a simple route (path) that maps to an even simpler callback function.
-<<<<<<< HEAD
-=======
  * "Callback functions" are part of the essence of Drupal programming.
->>>>>>> 334fc8b42dd9c6b50f90c8f67e8e74896b2f44bf
  */
 function bluesky_menu() {
 	# Another common practice among Drupal developers is the HEAVY use of arrays.
 	$routes = array();
 	
-<<<<<<< HEAD
 	// This route is represented by the following URL
-=======
-	#?? This route is represented by the following URL
->>>>>>> 334fc8b42dd9c6b50f90c8f67e8e74896b2f44bf
 	// http://yourdrupalsite/bluesky/helloworld
 	$routes['bluesky/helloworld'] = array(
 		// 'page callback' is the function that will be invoked when the above URL is given
@@ -71,44 +64,12 @@ function bluesky_helloworld() {
 }
 
 /**
-<<<<<<< HEAD
  * Implements hook_block_info()
  *
  * This is the hook that allows a developer to define any and all 
  * blocks that a site admin can choose from using the /admin/structure/blocks option.
  *
  * @returns array of block info items
- */
-function bluesky_block_info() {
-	$blocks = array();
-
-	// each block is identified by a "delta" value.
-	// this value will become clear when working with the 
-	// hook_block_view hook.
-	$blocks['partly_cloudy'] = array(
-		// at a minimum, specify the 'info' for this block
-		'info' => t('Blue Sky, Partly Cloudy Block'),
-		'cache' => DRUPAL_NO_CACHE,
-	);
-	
-	$blocks['partly_sunny'] = array(
-		'info' => t('Blue Sky, Partly Sunny Block'),
-		'cache' => DRUPAL_NO_CACHE,	// don't cache this block at any time
-	);
-
-	// NOTE -- one can also dynamically create blocks if need be:
-	// pseudo code logic
-	// -----------------
-	// query data rows based on pre-defined criteria
-	// for each row:
-	//   create block using data from row, making sure each 'delta' is unique
-	//
-	
-	return $blocks;
-}
-=======
- * Implements hook_block_info
- *
  */
 function bluesky_block_info() {
 	return array(
@@ -121,6 +82,14 @@ function bluesky_block_info() {
 			'cache' => DRUPAL_CACHE_PER_ROLE,
 		),
 	);
+
+	// NOTE -- one can also dynamically create blocks if need be:
+	// pseudo code logic
+	// -----------------
+	// query data rows based on pre-defined criteria
+	// for each row:
+	//   create block using data from row, making sure each 'delta' is unique
+	//	
 }
 
 /**
@@ -130,6 +99,8 @@ function bluesky_block_configure($delta='') {
 	if ($delta == 'bluesky_1') {
 		return array(
 			'mytext' => array(
+				// 'text_format' type allows us to leverage the "CKEditor" plugin
+				// (the fancy text editor)
 				'#type' => 'text_format',
 				'#title' => t('My Text Box'),
 			)
@@ -217,4 +188,3 @@ function bluesky_add_css_classes_form_element(&$form, &$form_state = NULL) {
 function bluesky_block_save($delta, $edit) {
 	kpr($edit);
 }
->>>>>>> 334fc8b42dd9c6b50f90c8f67e8e74896b2f44bf
