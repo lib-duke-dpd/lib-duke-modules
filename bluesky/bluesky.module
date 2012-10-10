@@ -24,12 +24,20 @@ function bluesky_help($path, $arg) {
  * @see: http://api.drupal.org/api/drupal/modules!system!system.api.php/function/hook_menu/7
  *
  * Here, we will provide a simple route (path) that maps to an even simpler callback function.
+<<<<<<< HEAD
+=======
+ * "Callback functions" are part of the essence of Drupal programming.
+>>>>>>> 334fc8b42dd9c6b50f90c8f67e8e74896b2f44bf
  */
 function bluesky_menu() {
 	# Another common practice among Drupal developers is the HEAVY use of arrays.
 	$routes = array();
 	
+<<<<<<< HEAD
 	// This route is represented by the following URL
+=======
+	#?? This route is represented by the following URL
+>>>>>>> 334fc8b42dd9c6b50f90c8f67e8e74896b2f44bf
 	// http://yourdrupalsite/bluesky/helloworld
 	$routes['bluesky/helloworld'] = array(
 		// 'page callback' is the function that will be invoked when the above URL is given
@@ -63,6 +71,7 @@ function bluesky_helloworld() {
 }
 
 /**
+<<<<<<< HEAD
  * Implements hook_block_info()
  *
  * This is the hook that allows a developer to define any and all 
@@ -97,3 +106,115 @@ function bluesky_block_info() {
 	
 	return $blocks;
 }
+=======
+ * Implements hook_block_info
+ *
+ */
+function bluesky_block_info() {
+	return array(
+		'bluesky_1' => array(
+			'info' => 'Simple Bluesky Block with Textbox entry form.',
+			'cache' => DRUPAL_CACHE_PER_PAGE,
+		),
+		'bluesky_2' => array(
+			'info' => 'Very simple Bluesky block.',
+			'cache' => DRUPAL_CACHE_PER_ROLE,
+		),
+	);
+}
+
+/**
+ * Implements hook_block_configure
+ */
+function bluesky_block_configure($delta='') {
+	if ($delta == 'bluesky_1') {
+		return array(
+			'mytext' => array(
+				'#type' => 'text_format',
+				'#title' => t('My Text Box'),
+			)
+		);
+	}
+	return array();
+}
+
+function bluesky_form_alter(&$form, &$form_state, $form_id) {
+	//dpm($form_id);
+}
+
+/**
+ * This is the first attempt to alter the display
+ * behavior of the form that displays options 
+ * for a block
+ */
+function bluesky_form_block_admin_configure_alter(&$form, &$form_state, $form_id) {
+	//kpr($form_state);
+	bluesky_add_css_classes_form_element($form, $form_state);
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter()
+ *
+ * Attempt to add a 'css_classes' field to the form
+ * allowing the site administrator, or an individual who 
+ * understands HTML/CSS, to add one or more css classes.
+ *
+ * @param $form
+ *   Nested array of form elmeents that comprise the form
+ *
+ * @param $form_state
+ *   A keyed array containing the current state of the form
+ *
+ * @param $form_id
+ *   String representing the name of the form, in this case, 
+ *   'block_add_block_form'
+ */
+function bluesky_form_block_add_block_form_alter(&$form, &$form_state, $form_id) {
+	bluesky_add_css_classes_form_element($form);
+	/*
+	$form['visibility']['css_attributes'] = array(
+		'#type' => 'fieldset',
+		'#collapsible' => TRUE,
+		'#collapsed' => TRUE,
+		'#group' => 'visibility',
+		'#title' => 'CSS Attributes',
+	);
+	$form['visibility']['css_attributes']['css_classes'] = array(
+		'#type' => 'textfield',
+		'#title' => 'Wrapper CSS class(es) for this block',
+		'#description' => 'List of CSS classes assigned to this block.',
+	);
+	$form['visibility']['css_attributes']['css_element_id'] = array(
+		'#type' => 'textfield',
+		'#title' => 'Element CSS ID',
+		'#description' => 'Unique identifier for this screen element.',
+		'#size' => 25,
+	);
+	*/
+}
+
+function bluesky_add_css_classes_form_element(&$form, &$form_state = NULL) {
+	$form['css_attributes'] = array(
+		'#type' => 'fieldset',
+		'#collapsible' => FALSE,
+		'#collapsed' => FALSE,
+		'#title' => 'CSS Attributes',
+	);
+	$form['css_attributes']['css_classes'] = array(
+		'#type' => 'textfield',
+		'#description' => 'List of CSS classes assigned to this block.',
+		'#title' => 'Wrapper CSS class name(s)',
+	);
+	$form['css_attributes']['css_element_id'] = array(
+		'#type' => 'textfield',
+		'#description' => 'Unique identifier for this screen element.',
+		'#size' => '20',
+		'#title' => 'Element CSS ID',
+	);
+	kpr($form);
+}
+
+function bluesky_block_save($delta, $edit) {
+	kpr($edit);
+}
+>>>>>>> 334fc8b42dd9c6b50f90c8f67e8e74896b2f44bf
