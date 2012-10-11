@@ -120,7 +120,7 @@ function bluesky_form_alter(&$form, &$form_state, $form_id) {
  */
 function bluesky_form_block_admin_configure_alter(&$form, &$form_state, $form_id) {
 	//kpr($form_state);
-	bluesky_add_css_classes_form_element($form, $form_state);
+	//bluesky_add_css_classes_form_element($form, $form_state);
 }
 
 /**
@@ -141,7 +141,7 @@ function bluesky_form_block_admin_configure_alter(&$form, &$form_state, $form_id
  *   'block_add_block_form'
  */
 function bluesky_form_block_add_block_form_alter(&$form, &$form_state, $form_id) {
-	bluesky_add_css_classes_form_element($form);
+	//bluesky_add_css_classes_form_element($form);
 	/*
 	$form['visibility']['css_attributes'] = array(
 		'#type' => 'fieldset',
@@ -186,5 +186,5 @@ function bluesky_add_css_classes_form_element(&$form, &$form_state = NULL) {
 }
 
 function bluesky_block_save($delta, $edit) {
-	kpr($edit);
+	//kpr($edit);
 }
