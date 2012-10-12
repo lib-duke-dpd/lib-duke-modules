@@ -7,3 +7,5 @@ core = 7.x
 ; The package (group) where this module will appear in the Module listing (for administrators)
 package = Duke Library UI
 
+dependencies[] = ctools
+
