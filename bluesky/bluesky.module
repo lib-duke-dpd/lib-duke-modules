@@ -212,8 +212,8 @@ function bluesky_ctools_plugin_type() {
 	return $plugins;
 }
 
-function bluesky_ctools_plugin_directory($modules, $plugin) {
-	watchdog('bluesky_ctools_plugin_directory', sprintf('%s|%s', $modules, $plugin));
+function bluesky_ctools_plugin_directory($module, $plugin) {
+	watchdog('bluesky_ctools_plugin_directory', sprintf('%s|%s', $module, $plugin));
 	if ($module == 'ctools') {
 		return 'plugins/cloud';
 	}
