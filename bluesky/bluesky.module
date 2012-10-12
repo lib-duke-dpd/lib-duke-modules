@@ -196,6 +196,6 @@ function bluesky_block_save($delta, $edit) {
 
 function bluesky_ctools_plugin_directory($owner, $plugin_type) {
 	if ($module == 'ctools' && !empty($plugin)) {
-		return 'plugins/' . $plugin
+		return 'plugins/' . $plugin;
 	}
 }
