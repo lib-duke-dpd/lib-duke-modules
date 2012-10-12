@@ -84,6 +84,11 @@ function bluesky_block_info() {
  * Implements hook_block_configure
  */
 function bluesky_block_configure($delta='') {
+	// Web Developer Notes:
+	// ----------------------------
+	// One approach to creating blocks that DPD can have 
+	// some CSS control over is by identifying all the different 
+	// blocks (
 	if ($delta == 'bluesky_1') {
 		return array(
 			'mytext' => array(
