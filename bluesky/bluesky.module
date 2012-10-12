@@ -169,6 +169,9 @@ function bluesky_form_block_add_block_form_alter(&$form, &$form_state, $form_id)
 	*/
 }
 
+/**
+ * 
+ */
 function bluesky_add_css_classes_form_element(&$form, &$form_state = NULL) {
 	$form['css_attributes'] = array(
 		'#type' => 'fieldset',
@@ -190,12 +193,27 @@ function bluesky_add_css_classes_form_element(&$form, &$form_state = NULL) {
 	kpr($form);
 }
 
+/**
+ *
+ */
 function bluesky_block_save($delta, $edit) {
 	//kpr($edit);
 }
 
+/**
+ * Implements hook_ctools_plugin_type() to inform CTools about the 
+ * cloud plugin
+ */
+function bluesky_ctools_plugin_type() {
+	$plugins['cloud'] = array(
+		'load themes' => TRUE,
+	);
+	
+	return $plugins;
+}
+
 function bluesky_ctools_plugin_directory($owner, $plugin_type) {
-	if ($module == 'ctools' && !empty($plugin)) {
-		return 'plugins/' . $plugin;
+	if ($owner == 'bluesky' && $plugin_type == 'content_types') {
+		return 'plugins/content_types';
 	}
 }

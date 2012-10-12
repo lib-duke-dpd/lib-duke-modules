@@ -1,18 +1,22 @@
 <?php
-
 /**
- * Callback function to supply a list of content types.
+ * @file
+ * Plugin to handle the lone 'cloud' appearing in the bluesky
  */
-function bluesky_cloud_ctools_content_types() {
-	return array(
-		'single' => TRUE,
-		'title' => t('Cloud output'),
-		'icon' => 'icon_node.png',
-		'description' => t('The single cloud in the blue sky.'),
-		'required context' => new ctools_context_required(t('Node'), 'node'),
-		'category' => t('Node'),
-	);
-}
+ 
+/**
+ * Plugins are described by creating a $plugin array which allows the local 
+ * actions template variables to be embedded into a panel
+ */
+$plugin = array(
+	'single' => TRUE,
+	'title' => t('Cloud output'),
+	'icon' => 'icon_node.png',
+	'description' => t('The single cloud in the blue sky.'),
+	'required context' => new ctools_context_required(t('Node'), 'node'),
+	'category' => t('Node'),
+);
+
 
 /**
  * Render the custom content type
