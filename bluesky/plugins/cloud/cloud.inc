@@ -13,7 +13,6 @@ $plugin = array(
 	'title' => t('Cloud output'),
 	'icon' => 'icon_node.png',
 	'description' => t('The single cloud in the blue sky.'),
-	'required context' => new ctools_context_required(t('Node'), 'node'),
 	'category' => t('Node'),
 );
 
