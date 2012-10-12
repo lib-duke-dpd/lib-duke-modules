@@ -30,7 +30,7 @@ function bluesky_menu() {
 	# Another common practice among Drupal developers is the HEAVY use of arrays.
 	$routes = array();
 	
-	#?? This route is represented by the following URL
+	// This route is represented by the following URL
 	// http://yourdrupalsite/bluesky/helloworld
 	$routes['bluesky/helloworld'] = array(
 		// 'page callback' is the function that will be invoked when the above URL is given
@@ -64,8 +64,12 @@ function bluesky_helloworld() {
 }
 
 /**
- * Implements hook_block_info
+ * Implements hook_block_info()
  *
+ * This is the hook that allows a developer to define any and all 
+ * blocks that a site admin can choose from using the /admin/structure/blocks option.
+ *
+ * @returns array of block info items
  */
 function bluesky_block_info() {
 	return array(
@@ -78,6 +82,14 @@ function bluesky_block_info() {
 			'cache' => DRUPAL_CACHE_PER_ROLE,
 		),
 	);
+
+	// NOTE -- one can also dynamically create blocks if need be:
+	// pseudo code logic
+	// -----------------
+	// query data rows based on pre-defined criteria
+	// for each row:
+	//   create block using data from row, making sure each 'delta' is unique
+	//	
 }
 
 /**
@@ -92,6 +104,8 @@ function bluesky_block_configure($delta='') {
 	if ($delta == 'bluesky_1') {
 		return array(
 			'mytext' => array(
+				// 'text_format' type allows us to leverage the "CKEditor" plugin
+				// (the fancy text editor)
 				'#type' => 'text_format',
 				'#title' => t('My Text Box'),
 			)
@@ -111,7 +125,7 @@ function bluesky_form_alter(&$form, &$form_state, $form_id) {
  */
 function bluesky_form_block_admin_configure_alter(&$form, &$form_state, $form_id) {
 	//kpr($form_state);
-	bluesky_add_css_classes_form_element($form, $form_state);
+	//bluesky_add_css_classes_form_element($form, $form_state);
 }
 
 /**
@@ -132,7 +146,7 @@ function bluesky_form_block_admin_configure_alter(&$form, &$form_state, $form_id
  *   'block_add_block_form'
  */
 function bluesky_form_block_add_block_form_alter(&$form, &$form_state, $form_id) {
-	bluesky_add_css_classes_form_element($form);
+	//bluesky_add_css_classes_form_element($form);
 	/*
 	$form['visibility']['css_attributes'] = array(
 		'#type' => 'fieldset',
@@ -177,5 +191,11 @@ function bluesky_add_css_classes_form_element(&$form, &$form_state = NULL) {
 }
 
 function bluesky_block_save($delta, $edit) {
-	kpr($edit);
+	//kpr($edit);
+}
+
+function bluesky_ctools_plugin_directory($owner, $plugin_type) {
+	if ($module == 'ctools' && !empty($plugin)) {
+		return 'plugins/' . $plugin
+	}
 }
