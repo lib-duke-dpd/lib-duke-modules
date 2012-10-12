@@ -188,3 +188,13 @@ function bluesky_add_css_classes_form_element(&$form, &$form_state = NULL) {
 function bluesky_block_save($delta, $edit) {
 	//kpr($edit);
 }
+
+function bluesky_ctools_plugin_type() {
+	watchdog('bluesky_ctools_plugin_type', 'hook called correctly');
+	return array();
+}
+
+function bluesky_ctools_plugin_directory($owner, $plugin_type) {
+	watchdog('bluesky_ctools_plugin_directory', print_r(array('owner'=>$owner,'plugin_type'=>$plugin_type), TRUE));
+	return 'plugins/mydir';
+}
