@@ -213,7 +213,7 @@ function bluesky_ctools_plugin_type() {
 }
 
 function bluesky_ctools_plugin_directory($owner, $plugin_type) {
-	watchdog('bluesky_ctools_plugin_directory', array($owner, $plugin_type));
+	watchdog('bluesky_ctools_plugin_directory', print_r(array($owner, $plugin_type), TRUE));
 	if ($owner == 'bluesky' && $plugin_type == 'content_types') {
 		return 'plugins/content_types';
 	}
