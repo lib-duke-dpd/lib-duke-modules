@@ -1,0 +1,6 @@
+name = Data/GIS Collections
+description = This module is responsible for displaying the Collections pages
+dependencies[] = ctools
+dependencies[] = panels
+core = 7.x
+package = Duke Library UI
