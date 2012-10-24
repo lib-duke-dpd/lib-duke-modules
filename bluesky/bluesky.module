@@ -60,7 +60,7 @@ function bluesky_preprocess(&$vars, $hook) {
 		if (isset($vars['node'])) {
 			kpr($vars['node']);
 		} else {
-			kpr($vars);
+			//kpr($vars);
 		}
 	}
 }
