@@ -56,9 +56,9 @@ function bluesky_menu() {
  */
 function bluesky_preprocess(&$vars, $hook) {
 	watchdog('bluesky_preprocess', $hook);
-	if ($hook == 'panels_pane') {
-		kpr($vars);
-	}
+	//if ($hook == 'panels_pane') {
+	//	kpr($vars);
+	//}
 }
 
 /**
