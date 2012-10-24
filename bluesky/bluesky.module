@@ -52,6 +52,13 @@ function bluesky_menu() {
 }
 
 /**
+ * Implementation for hook_preprocess()
+ */
+function bluesky_preprocess(&$vars, $hook) {
+	watchdog('bluesky_preprocess', $hook);
+}
+
+/**
  * This is the page callback that is invoked when
  * you (or an end user) types the following URL:
  * http://yourdrupalsite/bluesky/helloworld
