@@ -57,7 +57,11 @@ function bluesky_menu() {
 function bluesky_preprocess(&$vars, $hook) {
 	watchdog('bluesky_preprocess', $hook);
 	if ($hook == 'page') {
-		kpr($vars['node']);
+		if (isset($vars['node'])) {
+			kpr($vars['node']);
+		} else {
+			kpr($vars);
+		}
 	}
 }
 
