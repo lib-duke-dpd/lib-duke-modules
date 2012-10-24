@@ -58,7 +58,7 @@ function bluesky_preprocess(&$vars, $hook) {
 	watchdog('bluesky_preprocess', $hook);
 	if ($hook == 'page') {
 		if (isset($vars['node'])) {
-			kpr($vars['node']);
+			//kpr($vars['node']);
 		} else {
 			//kpr($vars);
 		}
