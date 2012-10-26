@@ -7,7 +7,7 @@ function datagis_menu() {
 	$items['admin/datagis'] = array(
 		'title' => 'Data/GIS Site Help',
 		'page callback' => 'datagis_index_page',
-		'access arguments' => TRUE,
+		'access callback' => TRUE,
 		'weight' => 9,
 	);
 	return $items;
