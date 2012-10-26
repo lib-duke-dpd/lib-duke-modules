@@ -1,0 +1,8 @@
+name = Data and GIS Module
+description = Provides a collection of useful UI functions, such as help text for various UI tasks
+core = 7.x
+dependencies[] = advanced_help
+dependencies[] = ctools
+dependencies[] = views
+dependencies[] = panels
+package = Duke Library UI
