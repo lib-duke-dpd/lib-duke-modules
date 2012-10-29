@@ -221,7 +221,7 @@ function bluesky_ctools_plugin_type() {
 }
 
 function bluesky_ctools_plugin_directory($module, $plugin) {
-	if (module_exists('devel') {
+	if (module_exists('devel')) {
 		watchdog('bluesky_ctools_plugin_dir', print_r(array($module, $plugin), TRUE));
 	}
 	return '';
