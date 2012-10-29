@@ -214,34 +214,21 @@ function bluesky_block_save($delta, $edit) {
 	//kpr($edit);
 }
 
-function bluesky_ctools_plugin_type() {
-	$plugins['example'] = array(
-		'load themes' => FALSE,
-	);
-}
-
-function bluesky_ctools_plugin_directory($module, $plugin) {
-	if (module_exists('devel')) {
-		watchdog('bluesky_ctools_plugin_dir', print_r(array($module, $plugin), TRUE));
-	}
-	return '';
-}
-
 /**
  * Implements hook_ctools_plugin_type() to inform CTools about the 
  * cloud plugin
  */
-//function bluesky_ctools_plugin_type() {
-//	$plugins['cloud'] = array(
-//		'load themes' => FALSE,
-//	);
-//	
-//	return $plugins;
-//}
+function bluesky_ctools_plugin_type() {
+	$plugins['cloud'] = array(
+		'load themes' => FALSE,
+	);
+	
+	return $plugins;
+}
 
-//function bluesky_ctools_plugin_directory($module, $plugin) {
-//	watchdog('bluesky_ctools_plugin_directory', sprintf('%s|%s', $module, $plugin));
-//	if ($module == 'ctools') {
-//		return 'plugins/cloud';
-//	}
-//}
+function bluesky_ctools_plugin_directory($module, $plugin) {
+	watchdog('bluesky_ctools_plugin_directory', sprintf('%s|%s', $module, $plugin));
+	if ($module == 'ctools') {
+		return 'plugins/cloud';
+	}
+}
