@@ -55,7 +55,7 @@ function bluesky_menu() {
  * Implementation for hook_preprocess()
  */
 function bluesky_preprocess(&$vars, $hook) {
-	watchdog('bluesky_preprocess', $hook);
+	//watchdog('bluesky_preprocess', $hook);
 	if ($hook == 'page') {
 		if (isset($vars['node'])) {
 			//kpr($vars['node']);
@@ -212,6 +212,12 @@ function bluesky_add_css_classes_form_element(&$form, &$form_state = NULL) {
  */
 function bluesky_block_save($delta, $edit) {
 	//kpr($edit);
+}
+
+function bluesky_ctools_plugin_type() {
+	$plugins['example'] = array
+		'load themes' => FALSE,
+	);
 }
 
 function bluesky_ctools_plugin_directory($module, $plugin) {
