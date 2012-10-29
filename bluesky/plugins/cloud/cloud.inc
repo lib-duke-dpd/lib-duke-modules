@@ -13,8 +13,8 @@ $plugin = array(
 	'title' => t('Cloud output'),
 	'icon' => 'icon_node.png',
 	'description' => t('The single cloud in the blue sky.'),
-	'category' => t('My Custom Categor'),
-	'render callback' => 'bluesy_cloud_content_type_render',
+	'category' => t('My Custom Category'),
+	'render callback' => 'bluesky_cloud_content_type_render',
 );
 
 
