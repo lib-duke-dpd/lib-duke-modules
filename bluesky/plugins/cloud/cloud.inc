@@ -13,10 +13,12 @@ $plugin = array(
 	'title' => t('Cloud output'),
 	'icon' => 'icon_node.png',
 	'description' => t('The single cloud in the blue sky.'),
-	'category' => t('My Custom Category'),
-	'render callback' => 'bluesky_cloud_content_type_render',
+	'context' => 'bluesky_cloud_context_callback',
 );
 
+function bluesky_cloud_context_callback() {
+	watchdog('bluesky_cloud_context_callback', '');
+}
 
 /**
  * Render the custom content type
