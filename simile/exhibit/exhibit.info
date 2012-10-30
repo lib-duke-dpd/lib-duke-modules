@@ -1,0 +1,5 @@
+name = Simile Exhibit
+description = This module attempts to provide a facility to including a Simile Exhibit widget on a page
+core = 7.x
+package = Simile
+

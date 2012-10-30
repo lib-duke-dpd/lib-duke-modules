@@ -1,0 +1,26 @@
+<?php
+
+function exhibit_node_info() {
+	return array(
+		'exhibit' => array(
+			'name' => t('Simile Exhibit'),
+			'base' => 'exhibit',
+			'description' => t('A Simile Exhibit Content Node/Page'),
+			'has_title' => TRUE,
+			'title_label' => t('Simile Exhibit Title'),
+			'locked' => FALSE,
+		),
+	);
+}
+
+function exhibit_form($node, $form_state) {
+	$type = node_type_get_type($node);
+	$form['title'] = array(
+		'#type' => 'textfield',
+		'#title' => check_plain($type->title_label),
+		'#default_value' => !empty($node->title) ? $node->title : '',
+		'#required' => TRUE,
+		'#weight' => -5,
+	);
+	return $form;
+}

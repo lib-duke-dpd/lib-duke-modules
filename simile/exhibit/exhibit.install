@@ -1,0 +1,112 @@
+<?php
+
+function exhibit_install() {
+	node_types_rebuild();
+	$types = node_type_get_types();
+	node_add_body_field($types['exhibit']);
+
+	foreach (_exhibit_installed_fields() as $field) {
+		field_create_field($field);
+	}
+
+	foreach (_exhibit_installed_instances() as $instance) {
+		field_create_instance($instance);
+	}
+}
+
+function _exhibit_installed_fields() {
+	$t = get_t();
+	return array(
+		'field_google_spreadsheet_url' => array(
+			'field_name' => 'field_google_spreadsheet_url',
+			'cardinality' => 1,
+			'type' => 'text',
+		),
+		'field_show_facets' => array(
+			'field_name' => 'field_show_facets',
+			'cardinality' => 1,
+			'type' => 'list_boolean',
+		),
+		'field_additional_text' => array(
+			'field_name' => 'field_additional_text',
+			'cardinality' => 1,
+			'type' => 'text_format',
+		),
+	);
+}
+
+function _exhibit_installed_instances() {
+	$t = get_t();
+	return array(
+		'field_google_spreadsheet_url' => array(
+			'field_name' => 'field_google_spreadsheet_url',
+			'label' => $t('Google Spreadsheet URL (JSON output)'),
+			'bundle' => 'exhibit',
+			'entity_type' => 'node',
+			'widget' => array(
+				'type' => 'text',
+			),
+			'display' => array(
+				'default' => array(
+					'label' => 'inline',
+					'type' => 'default_text_formatter',
+				),
+			),
+			'description' => 'Enter the URL of the Google Spreadsheet that will provide the source data',
+		),
+		'field_show_facets' => array(
+			'field_name' => 'field_show_facets',
+			'label' => $t('Include Facets?'),
+			'bundle' => 'exhibit',
+			'entity_type' => 'node',
+			'widget' => array(
+				'type' => 'list_boolean',
+			),
+			'display' => array(
+				'default' => array(
+					'label' => 'above',
+				),
+			),
+		),
+		'field_additional_text' => array(
+			'field_name' => 'field_additional_text',
+			'label' => $t('Additional Text'),
+			'bundle' => 'exhibit',
+			'entity_type' => 'node',
+			'widget' => array(
+				'type' => 'text_format',
+			),
+			'display' => array(
+				'default' => array(
+					'label' => 'above',
+				),
+			),
+			'description' => $t('This text will appear above the Simile Exhibit section'),
+		),
+	);
+}
+
+function exhibit_uninstall() {
+	$sql = 'SELECT nid FROM {node} n WHERE n.type = :type';
+	$result = db_query($sql, array(':type' => 'exhibit'));
+	$nids = array();
+	foreach ($result as $row) {
+		$nids[] = $row->nid;
+	}
+
+	node_delete_multiple($nids);
+
+	$instance = array('field_name' => 'comment_body','bundle' => 'comment_node_exhibit','entity_type'=>'comment');
+	field_delete_instance($instance);
+
+	$instance = array('field_name'=>'body','bundle'=>'exhibit','entity_type'=>'node');
+	field_delete_instance($instance);
+
+	$fields = array_keys(_exhibit_installed_fields());
+	foreach ($fields as $field) {
+		field_delete_field($field);
+	}
+
+	// Purge all field information
+	field_purge_batch(1000);
+}
