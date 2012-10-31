@@ -27,6 +27,7 @@ function bluesky_arg_create_jsonfeedurl($arg = NULL, $conf = NULL, $empty) {
 }
 
 function bluesky_arg_jsonfeedurl_settings_form($form, &$form_state) {
+	watchdog('settings_form', print_r($form_state, TRUE));
 	$conf = $form_state['conf'];
 
 	$form['jsonfeedurl'] = array('#type' => 'textfield',
@@ -39,7 +40,7 @@ function bluesky_arg_jsonfeedurl_settings_form($form, &$form_state) {
 }
 
 function bluesky_arg_jsonfeedurl_settings_form_submit($form, &$form_state) {
-	watchdog('settings_form_submit', print_r(array_keys($form_state), TRUE));
+	watchdog('settings_form_submit', print_r($form_state, TRUE));
 	$form_state['conf']['jsonfeedurl'] = $form_state['values']['jsonfeedurl'];
 }
 
