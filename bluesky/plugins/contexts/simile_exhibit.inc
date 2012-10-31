@@ -42,7 +42,7 @@ function bluesky_arg_simile_exhibit_settings_form($form, &$form_state) {
 
 function bluesky_arg_simile_exhibit_settings_form_submit($form, &$form_state) {
 	watchdog('settings_form_submit', dprint_r($form_state, TRUE));
+	$form_state['values']['jsonfeedurl'] = $form_state['input']['jsonfeedurl'];
 	$form_state['conf']['jsonfeedurl'] = $form_state['values']['jsonfeedurl'];
-	#$form_state['values']['jsonfeedurl'] = $form_state['input']['jsonfeedurl'];
 }
 
