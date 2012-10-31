@@ -10,23 +10,23 @@
  * used by the system that includes this file
  */
 $plugin = array(
-	'title' => t('JSON Feed URL'),
-	'description' => t('A JSON Feed URL'),
-	'context' => 'bluesky_arg_create_jsonfeedurl',
-	'edit form' => 'bluesky_arg_jsonfeedurl_settings_form',
+	'title' => t('Simile Exhibit'),
+	'description' => t('Context to alert page to use Simile Widget'),
+	'context' => 'bluesky_arg_create_simile_exhibit',
+	'edit form' => 'bluesky_arg_simile_exhibit_settings_form',
 	'defaults' => array('json_feed_url' => ''),
-	'keyword' => 'json_feed_url',
-	'context name' => 'jsonfeedurl',
+	'keyword' => 'simile_exhibit',
+	'context name' => 'simile_exhibit',
 );
 
-function bluesky_arg_create_jsonfeedurl($arg = NULL, $conf = NULL, $empty) {
-	$context = new ctools_context('jsonfeedurl');
+function bluesky_arg_create_simile_exhibit($arg = NULL, $conf = NULL, $empty) {
+	$context = new ctools_context('simile_exhibit');
 	$context->plugin = 'jsonfeedurl';
 
 	return $context;
 }
 
-function bluesky_arg_jsonfeedurl_settings_form($form, &$form_state) {
+function bluesky_arg_simile_exhibit_settings_form($form, &$form_state) {
 	$conf = &$form_state['conf'];
 
 	$form['jsonfeedurl'] = array('#type' => 'textfield',
@@ -39,7 +39,7 @@ function bluesky_arg_jsonfeedurl_settings_form($form, &$form_state) {
 	return $form;
 }
 
-function bluesky_arg_jsonfeedurl_settings_form_submit($form, &$form_state) {
+function bluesky_arg_simile_exhibit_settings_form_submit($form, &$form_state) {
 	watchdog('settings_form_submit', print_r($form_state, TRUE));
 	$form_state['conf']['jsonfeedurl'] = $form_state['values']['jsonfeedurl'];
 }
