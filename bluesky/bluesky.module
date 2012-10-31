@@ -228,7 +228,7 @@ function bluesky_block_save($delta, $edit) {
 
 function bluesky_ctools_plugin_directory($module, $plugin) {
 	watchdog('bluesky_ctools_plugin_directory', sprintf('%s|%s', $module, $plugin));
-	if ($module == 'page_manager') {
+	if ($module == 'ctools' && $plugin == 'contexts') {
 		return "plugins/$plugin";
 	}
 }
