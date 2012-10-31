@@ -21,7 +21,7 @@ $plugin = array(
 
 function bluesky_arg_create_simile_exhibit($arg = NULL, $conf = NULL, $empty) {
 	$context = new ctools_context('simile_exhibit');
-	$context->plugin = 'jsonfeedurl';
+	$context->plugin = 'simile_exhibit';
 
 	return $context;
 }
