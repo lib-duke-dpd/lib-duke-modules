@@ -14,7 +14,7 @@ $plugin = array(
 	'description' => t('Context to alert page to use Simile Widget'),
 	'context' => 'bluesky_arg_create_simile_exhibit',
 	'edit form' => 'bluesky_arg_simile_exhibit_settings_form',
-	'defaults' => array('json_feed_url' => ''),
+	'defaults' => array('jsonfeedurl' => ''),
 	'keyword' => 'simile_exhibit',
 	'context name' => 'simile_exhibit',
 );
@@ -42,6 +42,6 @@ function bluesky_arg_simile_exhibit_settings_form($form, &$form_state) {
 
 function bluesky_arg_simile_exhibit_settings_form_submit($form, &$form_state) {
 	watchdog('settings_form_submit', dprint_r($form_state, TRUE));
-	$form_state['conf']['jsonfeedurl'] = $form_state['values']['jsonfeedurl'];
+	$form_state['conf']['jsonfeedurl'] = $form_state['input']['jsonfeedurl'];
 }
 
