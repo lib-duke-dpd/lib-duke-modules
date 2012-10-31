@@ -27,6 +27,7 @@ function bluesky_arg_create_simile_exhibit($arg = NULL, $conf = NULL, $empty) {
 }
 
 function bluesky_arg_simile_exhibit_settings_form($form, &$form_state) {
+	watchdog('settings_form', dprint_r($form_state, TRUE));
 	$conf = &$form_state['conf'];
 
 	$form['jsonfeedurl'] = array('#type' => 'textfield',
@@ -40,7 +41,7 @@ function bluesky_arg_simile_exhibit_settings_form($form, &$form_state) {
 }
 
 function bluesky_arg_simile_exhibit_settings_form_submit($form, &$form_state) {
-	watchdog('settings_form_submit', print_r($form_state, TRUE));
+	watchdog('settings_form_submit', dprint_r($form_state, TRUE));
 	$form_state['conf']['jsonfeedurl'] = $form_state['values']['jsonfeedurl'];
 }
 
