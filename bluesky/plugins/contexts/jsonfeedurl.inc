@@ -12,7 +12,7 @@
 $plugin = array(
 	'title' => t('JSON Feed URL'),
 	'description' => t('A JSON Feed URL'),
-	'context' => 'bluesky_arg_create_json_feed',
+	'context' => 'bluesky_arg_create_jsonfeedurl',
 	'edit form' => 'bluesky_arg_jsonfeedurl_settings_form',
 	'defaults' => array('json_feed_url' => ''),
 	'keyword' => 'json_feed_url',
