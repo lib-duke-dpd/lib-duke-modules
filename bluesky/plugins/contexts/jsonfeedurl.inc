@@ -39,7 +39,6 @@ function bluesky_arg_jsonfeedurl_settings_form($form, &$form_state) {
 }
 
 function bluesky_arg_jsonfeedurl_settings_form_submit($form, &$form_state) {
-	kpr(array_keys($form_state));
 	$form_state['conf']['jsonfeedurl'] = $form_state['values']['jsonfeedurl'];
 }
 
