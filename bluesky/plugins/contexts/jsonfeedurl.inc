@@ -27,13 +27,13 @@ function bluesky_arg_create_jsonfeedurl($arg = NULL, $conf = NULL, $empty) {
 }
 
 function bluesky_arg_jsonfeedurl_settings_form($form, &$form_state) {
-	watchdog('settings_form', dprint_r($form_state, TRUE));
-	$conf = $form_state['conf'];
+	$conf = &$form_state['conf'];
 
 	$form['jsonfeedurl'] = array('#type' => 'textfield',
 		'#title' => t('JSON Feed URL'),
 		'#required' => TRUE,
 		'#description' => t('Specify the URL for the JSON data source'),
+		'#value' => $conf['jsonfeedurl'],
 	);
 
 	return $form;
