@@ -46,6 +46,11 @@ function bluesky_menu() {
 		'access callback' => TRUE,
 	);
 	
+	$routes['bluesky/sayhi'] = array(
+		'page callback' => 'bluesky_sayhi',
+		'access callback' => TRUE,
+	);
+	
 	// Now that we've specified all of our interested routes, return it to the 
 	// Drupal engine
 	return $routes;
