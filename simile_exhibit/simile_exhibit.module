@@ -1,0 +1,699 @@
+<?php
+
+/**
+ * @file
+ * Module file for Node Example module.
+ *
+ * Part of the Examples for Developers project.
+ */
+
+/**
+ * @defgroup simile_exhibit Example: Node
+ * @ingroup examples
+ * @{
+ * Example defining a node type in code.
+ *
+ * This is an example outlining how a module can be used to define a new
+ * node type. Our example node type will allow users to specify multiple
+ * "colors", a "quantity" and an "image" for their nodes; some kind of
+ * rudimentary inventory-tracking system, perhaps?
+ *
+ * The basic pattern for defining a node type is to tell Drupal about the
+ * node's fields and view modes. Drupal will then take over and manage
+ * the storage for this node type. This differs from Drupal 6, where we
+ * would have to handle all the database storage ourselves in the module.
+ *
+ * Remember that most node types do not require any custom code, as one
+ * simply creates them using the Drupal user interface. Creating a node like
+ * this in code is a special case.
+ *
+ * At absolute minimum, in order to provide a content type for
+ * node, you have to implement hook_node_info() and hook_form().
+ * Node can take care of the rest, if you want it to.
+ *
+ * First and foremost, defining a node type happens in
+ * hook_node_info(). Our implementation of this hook gives
+ * Drupal an array of information about the content type
+ * we want to create.
+ *
+ * Next, since we want to add fields to our content type, we
+ * implement hook_node_type_insert(), which gives us a chance
+ * to modify recently-created content types.
+ *
+ * Drupal is able to handle deletion of our content, including
+ * dependencies based on re-use of our field instances, so we don't
+ * have to manage any of it.
+ *
+ * In previous versions of Drupal, "teaser" and "page" were node view modes.
+ * In Drupal 7 we can define custom view modes to let the node know how it
+ * should return it's data.  This module declares a custom view mode called
+ * "example_node_list".
+ *
+ * Consult the @link http://drupal.org/node/707832 Field API Tutorial @endlink
+ * and @link http://drupal.org/node/443536 Field API Handbook Page @endlink
+ * and @link field Field API documentation @endlink.
+ *
+ * @see field_example.module
+ */
+
+/**
+ * Implements hook_menu().
+ *
+ * We are providing a default page to illustrate the use of our custom node view
+ * mode that will live at http://example.com/?q=examples/simile_exhibit
+ */
+function simile_exhibit_menu() {
+  $items['simile_exhibit'] = array(
+    'page callback' => 'simile_exhibit_page',
+    'access arguments' => array('access content'),
+    'title' => 'Simiie Exhibit',
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_block()
+ */
+function simile_exhibit_block_info() {
+	return array(
+		'facet_asset' => array(
+			'info' => t('Simile Exhibit Facet Asset'),
+			'cache' => DRUPAL_NO_CACHE,
+			'region' => 'Sidebar First',
+		),
+	);
+}
+
+/**
+ * Implements hook_block_configure()
+ */
+function simile_exhibit_block_configure($delta='') {
+	if ($delta == 'facet_asset') {
+		$form['base'] = array(
+			'#type' => 'fieldset',
+			'#title' => t('Facet Settings'),
+			'#collapsible' => TRUE,
+			'#collapsed' => FALSE,
+			'#tree' => TRUE,
+			'#weight' => -10,
+			'#group' => 'additional_settings',
+		);
+		$form['base']['jibber'] = array(
+			'#type' => 'textfield',
+			'#title' => t('Jibber Jabber'),
+			'#required' => FALSE,
+			'#description' => t('Jibber Jabber about Jibber Jabber'),
+			'#weight' => 0,
+			'#size' => 32,
+		);
+		return $form;
+	}
+}
+/**
+ * Implements hook_node_view()
+ * 
+ */
+function simile_exhibit_node_view($node, $view_mode, $langcode) {
+	//kpr($node);
+	$i = field_get_items('node', $node, 'simile_exhibit_show_facet', NULL);
+	return $node;
+}
+
+/**
+ * Implements hook_node_info().
+ *
+ * We use hook_node_info() to define our node content type.
+ */
+function simile_exhibit_node_info() {
+  // We define the node type as an associative array.
+  return array(
+    'simile_exhibit' => array(
+      'name' => t('Simile Exhibit'),
+      // 'base' tells Drupal the base string for hook functions.
+      // This is often the module name; if base is set to 'mymodule',
+      // Drupal would call mymodule_insert() or similar for node
+      // hooks. In our case, the base is 'simile_exhibit'.
+      'base' => 'simile_exhibit',
+      'description' => t('A page that will display a Simile Exhibit (with options)'),
+      'title_label' => t('Page Title'),
+      // We'll set the 'locked' attribute to TRUE, so users won't be
+      // able to change the machine name of our content type.
+      'locked' => TRUE,
+    ),
+  );
+}
+
+/**
+ * Implements hook_node_type_insert().
+ *
+ * Much like hook_node_insert() lets us know that a node is being
+ * inserted into the database, hook_node_type_insert() lets us know
+ * that a new content type has been inserted.
+ *
+ * Since Drupal will at some point insert our new content type,
+ * this gives us a chance to add the fields we want.
+ *
+ * It is called for all inserts to the content type database, so
+ * we have to make sure we're only modifying the type we're
+ * concerned with.
+ */
+function simile_exhibit_node_type_insert($content_type) {
+  if ($content_type->type == 'simile_exhibit') {
+    // First we add the body field. Node API helpfully gives us
+    // node_add_body_field().
+    // We'll set the body label now, although we could also set
+    // it along with our other instance properties later.
+    $body_instance = node_add_body_field($content_type, t('Exhibit HTML Content'));
+
+    // Add our example_node_list view mode to the body instance
+    // display by instructing the body to display as a summary
+    $body_instance['display']['example_node_list'] = array(
+      'label' => 'hidden',
+      'type' => 'text_summary_or_trimmed',
+    );
+
+    // Save our changes to the body field instance.
+    /// #field_update_instance($body_instance);
+
+    // Create all the fields we are adding to our content type.
+    foreach (_simile_exhibit_installed_fields() as $field) {
+      field_create_field($field);
+    }
+
+    // Create all the instances for our fields.
+    foreach (_simile_exhibit_installed_instances() as $instance) {
+      $instance['entity_type'] = 'node';
+      $instance['bundle'] = 'simile_exhibit';
+      field_create_instance($instance);
+    }
+  }
+}
+
+/**
+ * Implement hook_form().
+ *
+ * Drupal needs for us to provide a form that lets the user
+ * add content. This is the form that the user will see if
+ * they go to node/add/node-example.
+ *
+ * You can get fancy with this form, or you can just punt
+ * and return the default form that node_content will provide.
+ */
+function simile_exhibit_form($node, $form_state) {
+  return node_content_form($node, $form_state);
+}
+
+/**
+ * Callback that builds our content and returns it to the browser.
+ *
+ * This callback comes from hook_menu().
+ *
+ * @return
+ *   a build array
+ *   a renderable array showing a list of our nodes.
+ *
+ * @see node_load()
+ * @see node_view()
+ * @see simile_exhibit_field_formatter_view()
+ */
+function simile_exhibit_page() {
+  // We'll start building a renderable array that will be our page.
+  // For now we just declare the array.
+  
+  // load the fields and determine if we're using the JSON feed
+  // if so, add the <LINK> element for it
+  
+  // If the user wants to create a simile widget out of 
+  // existing nodes, query the database
+  $renderable_array = array();
+  // We query the database and find all of the nodes for the type we defined.
+  $sql = 'SELECT nid FROM {node} n WHERE n.type = :type AND n.status = :status';
+  $result = db_query($sql,
+    array(
+      ':type' => 'simile_exhibit',
+      ':status' => 1,
+    )
+  );
+  $renderable_array['explanation'] = array(
+    '#markup' => t("Node Example nodes you've created will be displayed here. Note that the color fields will be displayed differently in this list, than if you view the node normally. Click on the node title to see the difference. This is a result of using our 'example_node_list' node view type."),
+    );
+  // Loop through each of our simile_exhibit nodes and instruct node_view
+  // to use our "example_node_list" view.
+  // http://api.drupal.org/api/function/node_load/7
+  // http://api.drupal.org/api/function/node_view/7
+  foreach ($result as $row) {
+    $node = node_load($row->nid);
+    $renderable_array['node_list'][]= node_view($node, 'example_node_list');
+  }
+  return $renderable_array;
+}
+ 
+/**
+ * Implements hook_entity_info_alter().
+ *
+ * We need to modify the default node entity info by adding a new view mode to
+ * be used in functions like node_view() or node_build_content().
+ */
+function simile_exhibit_entity_info_alter(&$entity_info) {
+  // Add our new view mode to the list of view modes...
+  $entity_info['node']['view modes']['example_node_list'] = array(
+    'label' => t('Example Node List'),
+    'custom settings' => TRUE,
+  );
+}
+
+/**
+ * Implements hook_preprocess_node()
+ * 
+ * When a 'Simile Exhibit is detected:
+ * 1) add a theme_hook_suggestion (although I'm not sure it's needed)
+ * 2) Add Simile Exhibit JS reference to <HEAD>
+ * 
+ */
+function simile_exhibit_preprocess_node(&$variables) {
+	if ($variables['type'] == 'simile_exhibit') {
+		
+		// @TODO -- not sure if this is needed
+		$variables['theme_hook_suggestion'] = 'node__simile_exhibit';
+		$variables['content']['body']['#attributes']['class'][] = 'simile_exhibit_table';
+		$variables['content_attributes_array']['class'][] = 'simile-exhibit';
+		
+		$simile_exhibit_json_url = _simile_widget_get_field_value('simile_exhibit_json_url', $variables['node']);
+
+		if ($simile_exhibit_json_url) {
+			$js_path = 'http://api.simile-widgets.org/exhibit/3.0.0rc1/exhibit-api.js';
+			$js_path = 'http://api.simile-widgets.org/exhibit/2.2.0/exhibit-api.js';
+			$inline = sprintf('<script type="text/javascript" src="%s?autoCreate=false"></script>', $js_path);
+			drupal_add_html_head(
+				array(
+					'#type' => 'markup',
+					'#markup' => $inline,
+				),
+				'exhibit-api'
+			);
+
+			drupal_add_js(drupal_get_path('module','simile_exhibit') . '/js/init_exhibit.js');
+			drupal_add_js('http://library.duke.edu/javascript/common/jquery_url.js','external');
+			drupal_add_js('http://library.duke.edu/javascript/simile/exhibit/lens.js', 'external');
+			drupal_add_html_head(
+				array(
+					'#tag' => 'link',
+					'#attributes' => array(
+						'converter' => 'googleSpreadsheets',
+						'href' => $simile_exhibit_json_url,
+						'rel' => 'exhibit/data',
+						'type' => 'application/jsonp',
+					),
+					'#weight' => '99999',
+				),
+				'google_spreadsheet_converter'
+			);
+		}
+		//kpr($variables);
+	}	
+}
+
+/**
+ * Implements hook_preprocess_page()
+ */
+function simile_exhibit_preprocess_page(&$variables) {
+	//kpr($variables);
+	drupal_add_css(drupal_get_path('module', 'simile_exhibit') . '/css/simile_exhibit.css', array('weight' => 99999));
+}
+/**
+ * Implements hook_process_node()
+ */
+function simile_exhibit_process(&$variables, $hook) {
+	if ($hook == 'node' && $variables['type'] == 'simile_exhibit') {
+	}
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ *
+ * @todo: We need to provide a formatter for the colors that a user is allowed
+ * to enter during node creation.
+ */
+function simile_exhibit_field_formatter_vview($object_type, $object, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+  switch ($display['type']) {
+    case 'simile_exhibit_colors':
+      foreach ($items as $delta => $item) {
+        $element[$delta]['#type'] = 'markup';
+        $color = $item['safe_value'];
+        $element[$delta]['#markup'] = theme('example_node_color', array('color' => $color));
+      }
+      break;
+  }
+
+  return $element;
+}
+
+/**
+ * Implements hook_theme().
+ *
+ * This lets us tell Drupal about our theme functions and their arguments.
+ */
+function simile_exhibit_theme($existing, $type, $theme, $path) {
+  return array(
+    'example_node_color2' => array(
+      'variables' => array('color' => NULL),
+    ),
+    'simile_exhibit_table' => array(
+			'variables' => array('showfacet' => NULL),
+			'template' => 'simile_exhibit_table',
+		),
+		'simile_exhibit_facet' => array(
+			'variables' => array('facet' => NULL, 'field' => NULL),
+		),
+		'simile_exhibit_facets' => array(
+			'variables' => array(),
+			'template' => 'simile_exhibit_facets',
+		)
+  );
+}
+
+/**
+ * Implements hook_help().
+ */
+function simile_exhibit_help($path, $arg) {
+  switch ($path) {
+    case 'simile_exhibit':
+      return "<p>" . t("The Node Example module provides a custom node type.
+        You can create new Example Node nodes using the <a href='!nodeadd'>node add form</a>.",
+        array('!nodeadd' => url('node/add/node-example'))) . "</p>";
+  }
+}
+
+function theme_simile_exhibit_facet($variables) {
+	$facet = $variables['facet'];
+	$field = $variables['field'];
+	$columns = array_keys($field['columns']);
+	$attributes = array();
+	
+	foreach ($columns as $column) {
+		if (empty($facet[$column])) {
+			continue;
+		}
+		if ($column != 'collapsible' && $facet[$column] == '0') {
+			continue;
+		}
+		switch ($column) {
+			case 'facet_expression':
+				$attributes['ex:expression'] = $facet[$column];
+				break;
+			case 'facet_interval':
+				$attributes['ex:interval'] = $facet[$column];
+				break; 
+			case 'facet_label':
+				$attributes['ex:facetLabel'] = $facet[$column];
+				break; 
+			case 'facet_class':
+				$attributes['ex:facetClass'] = $facet[$column];
+				break; 
+			case 'facet_screen_id':
+				$attributes['id'] = $facet[$column];
+				break; 
+			case 'facet_query_param_name':
+				$attributes['queryParamName'] = $facet[$column];
+				break; 
+			case 'facet_collapsible':
+				$attributes['ex:collapsible'] = $facet[$column] == '0' ? 'false' : 'true';
+				break; 
+		}
+	}
+	$output = '<div ex:role="facet"';
+	foreach ($attributes as $k => $v) {
+		$output .= sprintf(' %s="%s"', $k, $v);
+	}
+	$output .= '></div>';
+	return $output;
+}
+/**
+ * A custom theme function.
+ *
+ * By using this function to format our node-specific information, themes
+ * can override this presentation if they wish.  This is a simplifed theme
+ * function purely for illustrative purposes.
+ */
+function theme_example_node_color2($variables) {
+  $output = '<span style="background-color: #ccc; padding: 1em; margin-bottom: 1em; float: left; color: ' . $variables['color'] . '">' . $variables['color'] . '</span>';
+  return $output;
+}
+
+//function theme_simile_exhibit_table($variables) {
+//	kpr($variables);
+//	return 'hi';
+//}
+
+/**
+ * Define the fields for our content type.
+ *
+ * This big array is factored into this function for readability.
+ *
+ * @return
+ *  An associative array specifying the fields we wish to add to our
+ *  new node type.
+ */
+function _simile_exhibit_installed_fields() {
+  return array(
+    'simile_exhibit_json_url' => array(
+      'field_name'  => 'simile_exhibit_json_url',
+      'cardinality' => 1,
+      'type'        => 'text',
+    ),
+    //'simile_exhibit_facet' => array(
+		//	'field_name' => 'exhibit_facet',
+		//	'type' => 'simile_exhibit_facet',
+		//	'cardinality' => FIELD_CARDINALITY_UNLIMITED,
+		//)
+  );
+}
+
+/**
+ * Define the field instances for our content type.
+ *
+ * The instance lets Drupal know which widget to use to allow the user to enter
+ * data and how to react in different view modes.  We are going to display a
+ * page that uses a custom "simile_exhibit_list" view mode.  We will set a
+ * cardinality of three allowing our content type to give the user three color
+ * fields.
+ *
+ * This big array is factored into this function for readability.
+ *
+ * @return
+ *  An associative array specifying the instances we wish to add to our new
+ *  node type.
+ */
+function _simile_exhibit_installed_instances() {
+  return array(
+    'simile_exhibit_json_url' => array(
+      'field_name'  => 'simile_exhibit_json_url',
+      'label' => t('JSON Feed URL'),
+      'type'        => 'text',
+      'widget'      => array(
+        'type'    => 'text_textfield',
+      ),
+      'display' => array(
+        'example_node_list' => array(
+          'label' => 'hidden',
+          'type' => 'hidden',
+        ),
+      ),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_info()
+ */
+function simile_exhibit_field_info() {
+	return array(
+		'simile_exhibit_facet' => array(
+			'label' => t('Exhibit Facet'),
+			'description' => t('This field stores data on a facet to be displayed when viewing a Simile Exhibit.'),
+			'settings' => array(
+				'allowed_values' => array(), 
+				'allowed_values_function' => array(),
+				'default_values' => array(
+					'facet_interval' => '0',
+				),
+			),
+			'default_widget' => 'simile_exhibit_facet',
+			'default_formatter' => 'simile_exhibit_facet_field',
+		),
+	);
+}
+
+/**
+ * Implements hook_field_validate()
+ */
+function simile_exhibit_field_validate($entity_type, $entity, $field, $instance, $langcode, $items, &$errors) {
+	
+}
+
+/**
+ * Implements hook_field_is_empty()
+ */
+function simile_exhibit_field_is_empty($item, $field) {
+	// @TODO study
+	return empty($item['facet_expression']);
+}
+
+/**
+ * Implements hook_field_load()
+ * 
+ */
+function simile_exhibit_field_load($entity_type, $entities, $field, $instances, $langcode, &$items) {
+	
+}
+/**
+ * Implements hook_field_widget_info()
+ */
+function simile_exhibit_field_widget_info() {
+	return array(
+		'simile_exhibit_facet_widget' => array(
+			'label' => t('Simile Exhibit Facet'),
+			'field types' => array('simile_exhibit_facet'),
+		),
+	);
+}
+
+/** 
+ * Implements hook_field_widget_form()
+ */
+function simile_exhibit_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+  switch ($instance['widget']['type']) {
+    case 'simile_exhibit_facet_widget':
+      $settings = $form_state['field'][$instance['field_name']][$langcode]['field']['settings'];
+ 
+      $fields = array(
+        'facet_expression' => t('Expression'),
+        'facet_class' => t('Facet Class'),
+        'facet_label' => t('Label'),
+        'facet_interval' => t('Interval'),
+        'facet_screen_id' => t('ID'),
+        'facet_query_param_name' => t('Query Parameter'),
+        'facet_collapsible' => t('Collapsible'),
+      );
+ 
+      $facet_expression = (!empty($field['settings']['facet_expression'])) ? explode("\n", $field['settings']['facet_expression']) : array();
+  		//dpm($element);
+			//dpm($instance);
+ 
+      foreach ($fields as $key => $label) {
+        $value = isset($items[$delta][$key]) ? $items[$delta][$key] : '';
+        //if (empty($value) && $key == 'ability') {
+        //  $value = $abilities[$delta];
+        //}
+        $field_type = ($key == 'facet_collapsible') ? 'checkbox' : 'textfield';
+				
+				if ($key == 'facet_collapsible') {
+					$element[$key] = array(
+						'#type' => 'checkbox',
+						'#title' => t('Collapsible?'),
+						'#default_value' => $value,
+					);				
+				} else {
+					$textbox_size = $key == 'facet_interval' ? 3 : 15;
+	        $element[$key] = array(
+	          '#type' => $field_type,
+	          '#size' => $textbox_size,
+	          '#title' => $label,
+	          '#default_value' => $value,
+	          //'#attached' => array(
+	          //  'css' => array(drupal_get_path('module', 'dnd_fields') . '/dnd_fields.css'),
+	          //  'js' => array(drupal_get_path('module', 'dnd_fields') . '/dnd_fields.js'),
+	          //),
+	          //'#prefix' => '&lt;div class="dnd-fields-ability-field dnd-fields-ability-' . $key . '-field dnd-fields-ability-' . $key . '-' . strtolower($abilities[$delta]) . '-field">',
+	          //'#suffix' => '&lt;/div>',
+	        );
+				}
+				try {
+					//$element[$key]['#attributes'] = array('class' => array('edit-simile-exhibit-facets'), 'title' => t(''), 'rel' => strtolower($facet_expression[$delta]));
+					$element[$key]['#attributes'] = array('class' => array('edit-simile-exhibit-facets'), 'title' => t(''));
+				} catch(Exception $e) {
+					
+				}
+				
+        if ($key == 'facet_expression') {
+        	//$element[$key]['#required'] = $delta ;
+          $element[$key]['#size'] = 10;
+          $element[$key]['#maxlength'] = 32;
+          //if (arg(0) != 'admin') {
+          //  $element[$key]['#attributes'] = array('readonly' => 'readonly');
+          //}
+        }
+				if ($key == 'facet_collapsible') {
+					//$element[$key]['#widget'] = array(
+					//	'#type' => 'options_onoff',
+					//);
+				}
+      }
+      break;
+  }
+  return $element;
+}
+
+/**
+ * Implements hook_field_presave
+ */
+function simile_exhibit_field_presave($entity_type, $entity, $field, $instance, $langcode, &$items) {
+	// make sure 'facet_interval' has an integer value
+	for($i = 0; $i < count($items); $i++) {
+		if (empty($items[$i]['facet_interval'])) {
+			$items[$i]['facet_interval'] = $field['settings']['default_values']['facet_interval'];
+		}
+	}
+}
+
+/**
+ * Implements hook_field_formatter_info()
+ */
+function simile_exhibit_field_formatter_info() {
+	return array(
+		'simile_exhibit_facet_field' => array(
+			'label' => t('Facets View'),
+			'field types' => array('simile_exhibit_facet'),
+		),
+	);
+}
+
+/**
+ * Implements hook_field_formatter_view()
+ */
+function simile_exhibit_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+	$element = array();
+
+	switch ($display['type']) {
+		case 'simile_exhibit_facet_field':
+				foreach ($items as $delta => $item) {
+					$element[$delta] = array(
+						'#theme' => 'simile_exhibit_facet',
+						'#facet' => $item,
+						'#field' => $field,
+					);
+				}
+				break;
+	}
+	return $element;	
+}
+
+function _simile_widget_get_field_value($fieldname, $node) {
+	$lang = $node->language;
+	$node_as_array = (array)$node;
+	if (count($node_as_array[$fieldname]) == 0) {
+		return FALSE;
+	}
+	$field = NULL;
+	try {
+		$field = $node_as_array[$fieldname][$lang];
+	} catch(Exception $e) {
+		return FALSE;
+	}
+	
+	return $field[0]['value'];
+}
+/**
+ * @} End of "defgroup simile_exhibit".
+ */

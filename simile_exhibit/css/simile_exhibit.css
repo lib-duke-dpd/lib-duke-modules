@@ -1,0 +1,15 @@
+.facet-container {
+	float: left;
+	width: 24.6%;
+	margin-right: 0.4%
+}
+.exhibit-container,
+.simile-exhibit .field-name-body {
+	float: left;
+	width: 74.6%;
+	margin-right: 0.4%;
+}
+.field-type-simile-exhibit-facet .form-item {
+	display: inline-block !important;
+	margin-right: 5px;
+}

@@ -1,0 +1,28 @@
+<?php
+
+/**
+ * Implements hook_field_schema
+ * 
+ * Defines the database schema of the field, using the format provided by the 
+ * Schema API.
+ * 
+ * 
+ */
+function simile_exhibit_field_schema($field) {
+	$columns = array(
+		'facet_class' => array('type' => 'varchar', 'length' => 25, 'not null' => FALSE),
+		'facet_expression' => array('type' => 'varchar', 'length' => 25, 'not null' => TRUE,),
+		'facet_label' => array('type' => 'varchar', 'length' => 35, 'not null' => FALSE),
+		'facet_screen_id' => array('type' => 'varchar', 'length' => 35, 'not null' => FALSE,),
+		'facet_query_param_name' => array('type' => 'varchar', 'length' => 35, 'not null' => FALSE,),
+		'facet_interval' => array('type' => 'int', 'size' => 'small', 'default' => 0, 'not null' => FALSE,),
+		'facet_collapsible' => array('type' => 'int', 'size' => 'tiny', 'default' => '0', 'not null' => FALSE,),
+	);
+	$indexes = array(
+		'facet_expression' => array('facet_expression')
+	);
+	return array(
+		'columns' => $columns,
+		'indexes' => $indexes,
+	);
+}
