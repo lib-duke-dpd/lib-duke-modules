@@ -1,0 +1,16 @@
+#edit-buttons {
+    width: 100%;
+    float: left;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background: rgba(80,80,80,.80);
+    border: 1px solid #333;
+    padding: 10px 0 10px 60px;
+}
+
+#edit-buttons input {
+    font-size: 120%;
+    padding: 5px 10px 5px 10px;
+    margin-right: 20px;
+}
