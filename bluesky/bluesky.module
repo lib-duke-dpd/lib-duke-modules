@@ -236,3 +236,15 @@ function bluesky_ctools_plugin_directory($module, $plugin) {
 		return "plugins/$plugin";
 	}
 }
+
+
+/**
+ ** adds CSS file for admin menus
+ */
+
+function bluesky_form_alter(&$form, &$form_state, $form_id) {
+  if (arg(0) == 'admin') {
+    $path = drupal_get_path('module', 'bluesky');  
+    $form['#attached']['css'][] = $path . '/bluesky.css';
+  }
+}
